@@ -26,6 +26,20 @@
     if (id === "v-alerts") renderAlerts(); // refresh in case SOS fired on another tab
   });
 
+  /* ---------- mobile nav drawer ---------- */
+  const adminEl = $(".admin");
+  const navToggle = $("#nav-toggle");
+  const setNav = (open) => {
+    adminEl.classList.toggle("nav-open", open);
+    navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  };
+  navToggle.addEventListener("click", () => setNav(!adminEl.classList.contains("nav-open")));
+  $("#nav-close").addEventListener("click", () => setNav(false));
+  $("#nav-backdrop").addEventListener("click", () => setNav(false));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") setNav(false); });
+  // Close the drawer once a section is chosen
+  document.addEventListener("click", (e) => { if (e.target.closest(".nav-item")) setNav(false); });
+
   const pill = (text, kind) => `<span class="pill pill--${kind}">${text}</span>`;
   const statusPill = (s) => {
     const map = { Active: "ok", Suspended: "danger", Completed: "ok", "In progress": "warn", Cancelled: "muted", Pending: "warn" };

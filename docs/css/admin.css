@@ -20,7 +20,7 @@
   top: 0;
   height: 100vh;
 }
-.sidebar__brand { padding: 4px 8px 20px; }
+.sidebar__brand { padding: 4px 8px 20px; display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
 .sidebar__brand .tag { font-size: 11px; color: var(--on-teal-dim); margin-top: 6px; letter-spacing: 0.04em; }
 .nav-item {
   display: flex; align-items: center; gap: 12px;
@@ -43,6 +43,33 @@
   border-radius: 99px; display: grid; place-items: center;
 }
 .sidebar__foot { margin-top: auto; font-size: 11.5px; color: var(--on-teal-dim); padding: 10px 8px 0; }
+
+/* Mobile menu controls — hidden on desktop, revealed in the media query below */
+.nav-backdrop { display: none; }
+.nav-toggle {
+  display: none;
+  flex: none;
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px;
+  width: 42px; height: 42px; padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--white);
+  cursor: pointer;
+}
+.nav-toggle span { width: 18px; height: 2px; border-radius: 2px; background: var(--ink); }
+.nav-toggle:hover { background: var(--bg); }
+.sidebar__close {
+  display: none;
+  flex: none;
+  width: 34px; height: 34px;
+  border: 0; border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff; font-size: 24px; line-height: 1;
+  cursor: pointer;
+}
+.sidebar__close:hover { background: rgba(255, 255, 255, 0.2); }
 
 /* Main */
 .main { background: var(--bg); min-width: 0; }
@@ -159,20 +186,45 @@
 
 .empty { padding: 30px; text-align: center; color: var(--muted); font-size: 14px; }
 
-/* Responsive: collapse sidebar to top bar on narrow screens */
+/* Responsive: sidebar becomes a slide-in drawer on narrow screens */
 @media (max-width: 860px) {
   .admin { grid-template-columns: 1fr; }
+
+  .nav-toggle { display: inline-flex; }
+
+  /* Off-canvas drawer — full labels, badges and footer actions stay intact */
   .sidebar {
-    position: static; height: auto;
-    flex-direction: row; flex-wrap: wrap; align-items: center;
-    gap: 4px; padding: 12px;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: min(84vw, 300px);
+    height: 100%;
+    z-index: 60;
+    padding: 20px 14px calc(16px + env(safe-area-inset-bottom));
+    overflow-y: auto;
+    transform: translateX(-100%);
+    transition: transform 0.26s ease;
+    box-shadow: 0 10px 40px rgba(10, 32, 37, 0.35);
   }
-  .sidebar__brand { padding: 0 10px 0 4px; }
-  .sidebar__brand .tag { display: none; }
-  .sidebar__foot { display: none; }
-  .nav-item { width: auto; padding: 9px 12px; }
-  .nav-item span.txt { display: none; }
-  .nav-item.active span.txt, .nav-item .badge { display: inline; }
+  .admin.nav-open .sidebar { transform: none; }
+
+  .sidebar__close { display: grid; place-items: center; }
+
+  /* Dim backdrop behind the drawer */
+  .nav-backdrop {
+    display: block;
+    position: fixed; inset: 0;
+    z-index: 55;
+    background: rgba(10, 32, 37, 0.5);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.26s ease;
+  }
+  .admin.nav-open .nav-backdrop { opacity: 1; pointer-events: auto; }
+
   .content { padding: 18px 16px 40px; }
-  .topbar { padding: 14px 16px; }
+  .topbar { padding: 12px 14px; }
+}
+
+/* Very narrow: drop the service-area pill so the top bar stays uncluttered */
+@media (max-width: 560px) {
+  .topbar .pill { display: none; }
 }
