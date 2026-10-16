@@ -1,0 +1,11 @@
+# Sensitive business documents — never publish (contracts, proposal w/ pricing)
+*.pdf
+
+# Brand source images (WhatsApp chrome + phone number) — reference only
+*.jpeg
+*.jpg
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.log
