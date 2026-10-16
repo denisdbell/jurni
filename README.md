@@ -8,16 +8,18 @@ SDK), and a built-in **Emergency / SOS** feature. Brand: *"Move with ease."*
 Mobile-responsive, dependency-free static **HTML / CSS / JS** — no backend, no
 build step.
 
+**Live site:** https://denisdbell.github.io/jurni/
+
 ## Run
 
 ```bash
-cd prototype
+cd docs
 python3 -m http.server 8000
 # then open http://localhost:8000
 ```
 
-Or just open `prototype/index.html` in a browser. (The "Use my current location"
+Or just open `docs/index.html` in a browser. (The "Use my current location"
 GPS feature needs a secure context, so prefer `http://localhost`.)
 
-See [`prototype/README.md`](prototype/README.md) for the full screen map, the
+See [`docs/README.md`](docs/README.md) for the full screen map, the
 end-to-end demo walkthrough, and what's simulated.

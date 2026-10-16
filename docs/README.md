@@ -15,7 +15,7 @@ For the most reliable experience (and so the **SOS → admin alert** flow shares
 state across the rider/driver/admin pages via `localStorage`), serve the folder:
 
 ```bash
-cd prototype
+cd docs
 python3 -m http.server 8000
 # then open http://localhost:8000
 ```
@@ -67,7 +67,7 @@ python3 -m http.server 8000
 ## Structure
 
 ```
-prototype/
+docs/
 ├── index.html · rider.html · driver.html · admin.html
 ├── css/  tokens.css · base.css · phone.css · admin.css
 └── js/   data.js · ui.js · rider.js · driver.js · admin.js
