@@ -1,0 +1,178 @@
+/* ------------------------------------------------------------------
+   Jurni — admin dashboard (desktop)
+   ------------------------------------------------------------------ */
+
+.admin {
+  display: grid;
+  grid-template-columns: 248px 1fr;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  background: linear-gradient(180deg, var(--teal) 0%, var(--teal-deep) 100%);
+  color: var(--on-teal);
+  padding: 22px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+.sidebar__brand { padding: 4px 8px 20px; }
+.sidebar__brand .tag { font-size: 11px; color: var(--on-teal-dim); margin-top: 6px; letter-spacing: 0.04em; }
+.nav-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 14px;
+  border-radius: var(--r-md);
+  color: var(--on-teal-dim);
+  font-weight: 600;
+  font-size: 14.5px;
+  border: 0; background: transparent; width: 100%; text-align: left;
+  transition: background 0.14s ease, color 0.14s ease;
+}
+.nav-item:hover { background: rgba(255, 255, 255, 0.07); color: var(--on-teal); }
+.nav-item.active { background: rgba(255, 255, 255, 0.14); color: #fff; }
+.nav-item .ic { flex: none; width: 20px; display: grid; place-items: center; }
+.nav-item .badge {
+  margin-left: auto;
+  background: var(--danger); color: #fff;
+  font-size: 11px; font-weight: 700;
+  min-width: 20px; height: 20px; padding: 0 6px;
+  border-radius: 99px; display: grid; place-items: center;
+}
+.sidebar__foot { margin-top: auto; font-size: 11.5px; color: var(--on-teal-dim); padding: 10px 8px 0; }
+
+/* Main */
+.main { background: var(--bg); min-width: 0; }
+.topbar {
+  display: flex; align-items: center; gap: 16px;
+  padding: 18px 28px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 10;
+}
+.topbar h1 { font-size: 20px; }
+.topbar .spacer { flex: 1; }
+.content { padding: 24px 28px 48px; }
+
+.view { display: none; }
+.view.active { display: block; }
+
+/* Stat cards */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-bottom: 26px;
+}
+.stat {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 18px;
+  box-shadow: var(--shadow-sm);
+}
+.stat .label { font-size: 12.5px; color: var(--muted); font-weight: 600; }
+.stat .value { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin-top: 6px; }
+.stat .foot { font-size: 12px; margin-top: 4px; }
+.stat.accent { background: linear-gradient(160deg, var(--teal) 0%, var(--teal-deep) 100%); color: #fff; border: 0; }
+.stat.accent .label, .stat.accent .foot { color: var(--on-teal-dim); }
+.stat.alert { border-color: #f3c9ca; }
+.stat.alert .value { color: var(--danger); }
+
+/* Panels */
+.panel {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 22px;
+  overflow: hidden;
+}
+.panel__head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.panel__head h2 { font-size: 16px; }
+.panel__head .spacer { flex: 1; }
+.panel__body { padding: 8px 20px 18px; }
+
+/* Tables */
+.table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.table th {
+  text-align: left;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  font-weight: 700;
+  padding: 12px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.table td { padding: 13px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.table tr:last-child td { border-bottom: 0; }
+.table tbody tr:hover { background: #f8fbfb; }
+.cell-strong { font-weight: 700; }
+
+.table-actions { display: flex; gap: 8px; }
+
+/* Fare matrix */
+.matrix-wrap { overflow-x: auto; }
+.matrix { border-collapse: collapse; font-size: 13.5px; min-width: 640px; }
+.matrix th, .matrix td {
+  border: 1px solid var(--border);
+  padding: 6px 8px;
+  text-align: center;
+}
+.matrix thead th { background: var(--teal); color: #fff; font-weight: 700; position: sticky; top: 0; }
+.matrix th.rowhead { background: var(--mint); color: var(--teal-700); text-align: left; font-weight: 700; white-space: nowrap; }
+.matrix td.diag { background: #f0f5f5; color: #b9c7c7; }
+.matrix input {
+  width: 68px; border: 0; background: transparent;
+  text-align: center; font-size: 13.5px; font-family: inherit; color: var(--ink);
+  border-radius: 6px; padding: 5px 2px;
+}
+.matrix input:focus { outline: none; background: var(--mint); box-shadow: 0 0 0 2px var(--aqua) inset; }
+
+/* Alert cards */
+.alert-card {
+  border: 1px solid #f1cccd;
+  border-left: 4px solid var(--danger);
+  border-radius: var(--r-md);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  background: #fff;
+  display: flex; gap: 14px; align-items: flex-start;
+}
+.alert-card.ack { border-color: var(--border); border-left-color: #c3cfcf; opacity: 0.72; }
+.alert-card .ic {
+  flex: none; width: 40px; height: 40px; border-radius: 50%;
+  background: #fde3e4; color: var(--danger-dark);
+  display: grid; place-items: center; font-size: 18px;
+}
+.alert-card.ack .ic { background: #eef3f3; color: var(--muted); }
+.alert-card .meta { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+.alert-card .spacer { flex: 1; }
+
+.empty { padding: 30px; text-align: center; color: var(--muted); font-size: 14px; }
+
+/* Responsive: collapse sidebar to top bar on narrow screens */
+@media (max-width: 860px) {
+  .admin { grid-template-columns: 1fr; }
+  .sidebar {
+    position: static; height: auto;
+    flex-direction: row; flex-wrap: wrap; align-items: center;
+    gap: 4px; padding: 12px;
+  }
+  .sidebar__brand { padding: 0 10px 0 4px; }
+  .sidebar__brand .tag { display: none; }
+  .sidebar__foot { display: none; }
+  .nav-item { width: auto; padding: 9px 12px; }
+  .nav-item span.txt { display: none; }
+  .nav-item.active span.txt, .nav-item .badge { display: inline; }
+  .content { padding: 18px 16px 40px; }
+  .topbar { padding: 14px 16px; }
+}

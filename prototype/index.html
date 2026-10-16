@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jurni — Move with ease</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <style>
+    .land { min-height: 100vh; display: flex; flex-direction: column; }
+    .land__hero {
+      color: var(--on-teal);
+      background:
+        radial-gradient(640px 320px at 88% -8%, rgba(79,195,212,.34), transparent 60%),
+        linear-gradient(160deg, var(--teal) 0%, var(--teal-deep) 100%);
+      padding: 48px 20px 120px;
+    }
+    .wrap { width: 100%; max-width: 980px; margin: 0 auto; }
+    .land__hero h1 { font-size: clamp(30px, 5vw, 46px); line-height: 1.08; margin: 22px 0 14px; letter-spacing: -0.02em; }
+    .land__hero p.lede { font-size: clamp(15px, 2.2vw, 19px); color: var(--on-teal-dim); max-width: 620px; }
+    .hero-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+
+    .roles {
+      width: 100%; max-width: 980px; margin: -84px auto 0;
+      padding: 0 20px 20px;
+      display: grid; gap: 18px;
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .role {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-xl);
+      padding: 24px 22px;
+      box-shadow: var(--shadow-md);
+      display: flex; flex-direction: column; gap: 12px;
+      transition: transform .14s ease, box-shadow .14s ease;
+    }
+    .role:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+    .role__ic {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: grid; place-items: center; font-size: 26px;
+      background: var(--mint);
+    }
+    .role h3 { font-size: 19px; }
+    .role p { font-size: 13.5px; color: var(--muted); flex: 1; }
+
+    .services { padding: 40px 20px 20px; }
+    .services h2 { font-size: 20px; margin-bottom: 4px; }
+    .svc-grid { display: grid; gap: 14px; grid-template-columns: repeat(4, 1fr); margin-top: 18px; }
+    .svc {
+      border: 1px solid var(--border); border-radius: var(--r-lg);
+      padding: 16px; background: var(--white);
+    }
+    .svc .svc-ic { font-size: 22px; }
+    .svc h4 { font-size: 14.5px; margin: 8px 0 4px; }
+    .svc p { font-size: 12.5px; color: var(--muted); }
+
+    .land__foot {
+      margin-top: auto;
+      background: var(--teal-deep);
+      color: var(--on-teal-dim);
+      text-align: center;
+      padding: 28px 20px;
+      font-size: 13px;
+    }
+    .note { font-size: 12.5px; color: var(--muted); margin-top: 18px; }
+
+    @media (max-width: 760px) {
+      .roles { grid-template-columns: 1fr; margin-top: -72px; }
+      .svc-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="land">
+    <header class="land__hero map-texture">
+      <div class="wrap">
+        <div id="brand"></div>
+        <h1>The easiest way to move<br />around Kingston.</h1>
+        <p class="lede">
+          Request a ride by area, see a clear recommended fare, get matched with a
+          nearby driver, and watch them approach — all from your phone browser.
+          Cash-settled, phone-coordinated, safety built in.
+        </p>
+        <div class="hero-pills">
+          <span class="pill pill--teal">Kingston · St. Andrew · Portmore</span>
+          <span class="pill pill--teal">No app download</span>
+          <span class="pill pill--teal">Emergency / SOS</span>
+          <span class="pill pill--teal">Cash · JMD</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="roles">
+      <a class="role" href="rider.html">
+        <div class="role__ic">🧍</div>
+        <h3>Rider</h3>
+        <p>Request a ride, see the fare, track your driver's approach, pay cash and rate.</p>
+        <span class="btn btn--primary btn--block">Open rider app →</span>
+      </a>
+      <a class="role" href="driver.html">
+        <div class="role__ic">🚗</div>
+        <h3>Driver</h3>
+        <p>Go online, accept nearby requests, share your position en route, and get paid.</p>
+        <span class="btn btn--teal btn--block">Open driver app →</span>
+      </a>
+      <a class="role" href="admin.html">
+        <div class="role__ic">🛠️</div>
+        <h3>Admin</h3>
+        <p>Approve drivers, set zone fares, watch activity, and respond to SOS alerts.</p>
+        <span class="btn btn--ghost btn--block">Open dashboard →</span>
+      </a>
+    </section>
+
+    <section class="services wrap">
+      <span class="eyebrow">The Jurni platform</span>
+      <h2>One brand, room to grow</h2>
+      <p class="muted small">This prototype covers the bare-bones <strong>ride</strong> MVP. The wider Jurni services are on the roadmap.</p>
+      <div class="svc-grid">
+        <div class="svc">
+          <div class="svc-ic">🚕</div>
+          <h4>Rides</h4>
+          <p>Personal journeys — tailored mobility.</p>
+          <span class="pill pill--ok" style="margin-top:10px">In this MVP</span>
+        </div>
+        <div class="svc">
+          <div class="svc-ic">🛒</div>
+          <h4>Grocery runs</h4>
+          <p>Fresh food, delivered to your door.</p>
+          <span class="pill pill--muted" style="margin-top:10px">Coming soon</span>
+        </div>
+        <div class="svc">
+          <div class="svc-ic">📦</div>
+          <h4>Package delivery</h4>
+          <p>Book a ride for your parcel.</p>
+          <span class="pill pill--muted" style="margin-top:10px">Coming soon</span>
+        </div>
+        <div class="svc">
+          <div class="svc-ic">💳</div>
+          <h4>Card payments</h4>
+          <p>Scotiabank & CIBC — simple, secure.</p>
+          <span class="pill pill--muted" style="margin-top:10px">Coming soon</span>
+        </div>
+      </div>
+      <p class="note">
+        Prototype · clickable demo with simulated data · no backend.
+        Pick a role above to walk the flow.
+      </p>
+    </section>
+
+    <footer class="land__foot">
+      <div id="brand-foot" style="display:flex;justify-content:center;margin-bottom:8px"></div>
+      chatter taxi company · Move with ease
+    </footer>
+  </div>
+
+  <script src="js/ui.js"></script>
+  <script>
+    document.getElementById("brand").innerHTML = UI.logo("light", 34, true);
+    document.getElementById("brand-foot").innerHTML = UI.logo("light", 22, false);
+  </script>
+</body>
+</html>

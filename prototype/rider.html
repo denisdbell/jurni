@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jurni — Rider</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/phone.css" />
+</head>
+<body>
+  <div class="stage">
+    <div class="phone">
+      <!-- status bar -->
+      <div class="statusbar">
+        <span id="sb-brand"></span>
+        <span class="sb-icons">9:41 · 📶 🔋</span>
+      </div>
+
+      <div class="screens">
+
+        <!-- 1 ─ Phone login -->
+        <section class="screen active" id="scr-login">
+          <div class="phero map-texture">
+            <div id="login-brand" style="margin-bottom:16px"></div>
+            <h1>Welcome 👋</h1>
+            <p>Sign in with your phone number to request a ride.</p>
+          </div>
+          <div class="screen__body">
+            <div class="field">
+              <label>Phone number</label>
+              <input class="input" id="in-phone" type="tel" inputmode="tel" value="876-555-0199" />
+            </div>
+            <p class="tiny muted">We'll text you a one-time code. Standard SMS rates may apply.</p>
+          </div>
+          <div class="screen__footer">
+            <button class="btn btn--primary btn--block btn--lg" data-goto="scr-otp">Send code</button>
+          </div>
+        </section>
+
+        <!-- 2 ─ OTP -->
+        <section class="screen" id="scr-otp">
+          <div class="appbar">
+            <button class="appbar__back" data-goto="scr-login">←</button>
+            <span class="appbar__title">Verify your number</span>
+          </div>
+          <div class="screen__body">
+            <p class="muted small" style="margin-bottom:18px">
+              Enter the 4-digit code sent to <strong id="otp-dest">876-555-0199</strong>.
+              <br />(Demo: any digits work.)
+            </p>
+            <div class="otp" id="otp-boxes">
+              <input maxlength="1" inputmode="numeric" value="4" />
+              <input maxlength="1" inputmode="numeric" value="2" />
+              <input maxlength="1" inputmode="numeric" value="8" />
+              <input maxlength="1" inputmode="numeric" value="1" />
+            </div>
+            <p class="center small muted" style="margin-top:18px">Didn't get it? <a style="color:var(--teal);font-weight:600">Resend</a></p>
+          </div>
+          <div class="screen__footer">
+            <button class="btn btn--primary btn--block btn--lg" data-goto="scr-verify">Verify</button>
+          </div>
+        </section>
+
+        <!-- 3 ─ ID verification + emergency contact -->
+        <section class="screen" id="scr-verify">
+          <div class="appbar">
+            <span class="appbar__title">Set up your account</span>
+          </div>
+          <div class="screen__body">
+            <span class="eyebrow">Identity</span>
+            <h3 style="margin:6px 0 4px">Basic ID verification</h3>
+            <p class="muted small" style="margin-bottom:14px">Upload a government ID so Jurni can keep rides safe. An admin reviews it.</p>
+            <div class="upload-tile" id="id-tile">
+              <div class="ic">🪪</div>
+              <div class="grow">
+                <div class="bold small">Government ID</div>
+                <div class="tiny muted" id="id-status">No file chosen</div>
+              </div>
+              <button class="btn btn--ghost btn--sm" id="btn-upload-id">Upload</button>
+            </div>
+
+            <div style="height:22px"></div>
+            <span class="eyebrow">Safety</span>
+            <h3 style="margin:6px 0 4px">Emergency contact</h3>
+            <p class="muted small" style="margin-bottom:14px">We can alert this person if you ever trigger SOS during a ride.</p>
+            <div class="field">
+              <label>Contact name</label>
+              <input class="input" id="in-ec-name" placeholder="e.g. Mom" value="Marcia" />
+            </div>
+            <div class="field">
+              <label>Contact number</label>
+              <input class="input" id="in-ec-phone" type="tel" placeholder="876-000-0000" value="876-555-0010" />
+            </div>
+          </div>
+          <div class="screen__footer">
+            <button class="btn btn--primary btn--block btn--lg" id="btn-finish-setup">Continue</button>
+          </div>
+        </section>
+
+        <!-- 4 ─ Home / request a ride -->
+        <section class="screen" id="scr-home">
+          <div class="appbar">
+            <span class="appbar__title">Request a ride</span>
+            <span class="appbar__spacer"></span>
+            <button class="btn btn--ghost btn--sm" data-goto="scr-history">History</button>
+          </div>
+          <div class="screen__body">
+            <div class="card">
+              <div class="route-select">
+                <div class="route-pin">
+                  <span class="dot"></span>
+                  <div class="ta grow" id="ta-from"></div>
+                </div>
+                <div class="route-line"></div>
+                <div class="route-pin">
+                  <span class="dot dest"></span>
+                  <div class="ta grow" id="ta-to"></div>
+                </div>
+              </div>
+              <button class="btn btn--ghost btn--sm" id="btn-gps" style="width:100%;margin-top:12px">📍 Use my current location</button>
+            </div>
+
+            <div class="card mt-md" id="fare-preview">
+              <div class="row row--between">
+                <span class="muted small">Recommended fare</span>
+                <span class="pill">Zone-based</span>
+              </div>
+              <div class="fare-big mt-sm" id="home-fare">—</div>
+              <p class="tiny muted">You and the driver can still negotiate the final amount.</p>
+            </div>
+
+            <div class="mt-md" style="display:flex;gap:10px;flex-wrap:wrap">
+              <span class="pill pill--muted">💵 Cash</span>
+              <span class="pill pill--muted">📞 Coordinate by phone</span>
+              <span class="pill pill--muted">🛡️ SOS during ride</span>
+            </div>
+          </div>
+          <div class="screen__footer">
+            <button class="btn btn--primary btn--block btn--lg" id="btn-request">Request ride</button>
+          </div>
+        </section>
+
+        <!-- 5 ─ Fare / negotiate -->
+        <section class="screen" id="scr-fare">
+          <div class="appbar">
+            <button class="appbar__back" data-goto="scr-home">←</button>
+            <span class="appbar__title">Confirm fare</span>
+          </div>
+          <div class="screen__body">
+            <div class="card">
+              <div class="row row--between">
+                <div>
+                  <div class="tiny muted">PICKUP</div>
+                  <div class="bold" id="fare-from">—</div>
+                </div>
+                <div style="color:var(--aqua);font-size:20px">→</div>
+                <div style="text-align:right">
+                  <div class="tiny muted">DROP-OFF</div>
+                  <div class="bold" id="fare-to">—</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="fare-line mt-md">
+              <span class="muted">Recommended</span>
+              <span class="amount" id="fare-recommended">—</span>
+            </div>
+
+            <div class="field mt-md">
+              <label>Your offer (optional — negotiate)</label>
+              <input class="input" id="in-offer" type="number" inputmode="numeric" placeholder="Leave blank to accept recommended" />
+            </div>
+            <p class="tiny muted">Drivers see your offer and can accept or counter it.</p>
+          </div>
+          <div class="screen__footer">
+            <button class="btn btn--primary btn--block btn--lg" id="btn-find-driver">Find a driver</button>
+          </div>
+        </section>
+
+        <!-- 6 ─ Finding a driver -->
+        <section class="screen" id="scr-finding">
+          <div class="appbar">
+            <button class="appbar__back" data-goto="scr-home">←</button>
+            <span class="appbar__title">Finding a driver</span>
+          </div>
+          <div class="screen__body center" style="justify-content:center;display:flex;flex-direction:column;align-items:center">
+            <div class="radar"></div>
+            <h3 style="margin-top:18px">Matching you with a nearby driver…</h3>
+            <p class="muted small" style="margin-top:6px">Sending your request to available drivers in the area.</p>
+            <div class="pill mt-md" id="finding-route">—</div>
+          </div>
+        </section>
+
+        <!-- 7 ─ Matched / en route (distance bar) -->
+        <section class="screen" id="scr-trip">
+          <div class="appbar">
+            <span class="appbar__title">Driver on the way</span>
+            <span class="appbar__spacer"></span>
+            <span class="pill pill--ok" id="trip-status-pill">En route</span>
+          </div>
+          <div class="screen__body">
+            <div class="driver-card">
+              <div class="row">
+                <div class="avatar" id="dc-avatar">M</div>
+                <div class="grow">
+                  <div class="bold" id="dc-name">Marlon · Toyota Axio (silver)</div>
+                  <div class="small muted" id="dc-meta">Plate 1234 AB · ⭐ 4.8</div>
+                </div>
+                <a class="btn btn--primary btn--sm" id="dc-call" href="tel:8765550101">📞 Call</a>
+              </div>
+
+              <div class="distance-panel mt-md">
+                <div class="distance-bar"><span id="dist-fill"></span></div>
+                <div class="labels">
+                  <span id="dist-state">On the way</span>
+                  <span class="bold" id="dist-away">~3.0 km away</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card mt-md">
+              <div class="row row--between">
+                <span class="muted small">Agreed fare</span>
+                <span class="amount" id="trip-fare">—</span>
+              </div>
+              <div class="row row--between mt-sm">
+                <span class="muted small">Route</span>
+                <span class="small bold" id="trip-route">—</span>
+              </div>
+              <div class="row row--between mt-sm">
+                <span class="muted small">Payment</span>
+                <span class="pill pill--muted">💵 Cash</span>
+              </div>
+            </div>
+
+            <p class="tiny muted mt-md center">
+              The bar fills as your driver gets closer (free browser GPS — no map).
+            </p>
+          </div>
+          <div class="screen__footer">
+            <button class="sos-btn" data-modal-open="sos-modal">🛡️ Emergency / SOS</button>
+          </div>
+        </section>
+
+        <!-- 8 ─ On the way to destination -->
+        <section class="screen" id="scr-todest">
+          <div class="appbar">
+            <span class="appbar__title" id="td-title">On the way</span>
+            <span class="appbar__spacer"></span>
+            <span class="pill pill--ok" id="td-status-pill">In trip</span>
+          </div>
+          <div class="screen__body">
+            <div class="driver-card">
+              <div class="row">
+                <div class="avatar" id="td-avatar">M</div>
+                <div class="grow">
+                  <div class="bold" id="td-dest">Heading to your destination</div>
+                  <div class="small muted" id="td-driver">—</div>
+                </div>
+              </div>
+              <div class="distance-panel mt-md">
+                <div class="distance-bar"><span id="td-fill"></span></div>
+                <div class="labels">
+                  <span id="td-state">Heading to destination</span>
+                  <span class="bold" id="td-away">~5.0 km</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card mt-md">
+              <div class="row row--between"><span class="muted small">Route</span><span class="small bold" id="td-route">—</span></div>
+              <div class="row row--between mt-sm"><span class="muted small">Fare (cash)</span><span class="amount" id="td-fare">—</span></div>
+            </div>
+
+            <p class="tiny muted mt-md center">Enjoy the ride — the bar fills as you near your drop-off.</p>
+          </div>
+          <div class="screen__footer">
+            <button class="sos-btn" data-modal-open="sos-modal">🛡️ Emergency / SOS</button>
+          </div>
+        </section>
+
+        <!-- 9 ─ Trip complete -->
+        <section class="screen" id="scr-complete">
+          <div class="appbar">
+            <span class="appbar__title">Trip complete</span>
+          </div>
+          <div class="screen__body">
+            <div class="center" style="padding:10px 0 4px">
+              <div style="font-size:46px">✅</div>
+              <h2 style="margin-top:8px">You've arrived</h2>
+              <p class="muted small">Please pay your driver in cash.</p>
+            </div>
+
+            <div class="card mt-md">
+              <div class="fare-line" style="border:0;padding-bottom:6px">
+                <span class="muted">Amount due</span>
+                <span class="fare-big" id="complete-fare">—</span>
+              </div>
+              <div class="pill pill--muted">💵 Cash to driver</div>
+            </div>
+
+            <div class="card mt-md center">
+              <div class="bold" style="margin-bottom:10px">Rate your driver</div>
+              <div id="rate-driver" style="justify-content:center;display:flex"></div>
+              <div class="field mt-md" style="text-align:left;margin-bottom:0">
+                <label>Add a note (optional)</label>
+                <textarea class="textarea" id="rate-note" placeholder="How was your trip?"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="screen__footer">
+            <button class="btn btn--primary btn--block btn--lg" id="btn-submit-rating">Submit & finish</button>
+          </div>
+        </section>
+
+        <!-- 9 ─ Ride history -->
+        <section class="screen" id="scr-history">
+          <div class="appbar">
+            <button class="appbar__back" data-goto="scr-home">←</button>
+            <span class="appbar__title">Ride history</span>
+          </div>
+          <div class="screen__body">
+            <ul id="history-list"></ul>
+          </div>
+        </section>
+
+      </div><!-- /screens -->
+
+      <!-- SOS floating button (visible on trip screen only, toggled by JS) -->
+      <button class="sos-fab hidden" id="sos-fab" data-modal-open="sos-modal">SOS</button>
+
+      <!-- SOS modal -->
+      <div class="modal" id="sos-modal">
+        <div class="modal__sheet">
+          <div class="modal__grip"></div>
+          <h2 style="margin-bottom:4px">Emergency / SOS</h2>
+          <p class="muted small" style="margin-bottom:16px">Choose an action. Your location is captured when you tap.</p>
+
+          <a class="card row" href="tel:911" style="margin-bottom:10px;text-decoration:none">
+            <div class="avatar" style="background:var(--danger)">📞</div>
+            <div class="grow">
+              <div class="bold">Call 911</div>
+              <div class="tiny muted">Dial Jamaica emergency services now.</div>
+            </div>
+            <span style="color:var(--muted)">›</span>
+          </a>
+
+          <button class="card row" id="sos-alert" style="width:100%;text-align:left;border:1px solid var(--border);background:var(--card);margin-bottom:10px">
+            <div class="avatar" style="background:var(--warn)">🚨</div>
+            <div class="grow">
+              <div class="bold">Alert Jurni admin</div>
+              <div class="tiny muted">Send your identity, ride details & GPS location.</div>
+            </div>
+            <span style="color:var(--muted)">›</span>
+          </button>
+
+          <button class="card row" id="sos-report" style="width:100%;text-align:left;border:1px solid var(--border);background:var(--card);margin-bottom:10px">
+            <div class="avatar" style="background:var(--teal)">⚠️</div>
+            <div class="grow">
+              <div class="bold">Report activity</div>
+              <div class="tiny muted">Flag suspicious or unsafe behaviour.</div>
+            </div>
+            <span style="color:var(--muted)">›</span>
+          </button>
+
+          <!-- report note (hidden until "Report activity") -->
+          <div id="report-box" class="hidden" style="margin:4px 0 10px">
+            <div class="field" style="margin-bottom:8px">
+              <label>What happened?</label>
+              <textarea class="textarea" id="report-note" placeholder="Describe the issue — driver, route, behaviour…"></textarea>
+            </div>
+            <button class="btn btn--danger btn--block" id="sos-report-send">Send report to admin</button>
+          </div>
+
+          <button class="btn btn--ghost btn--block" data-modal-close="sos-modal">Cancel</button>
+        </div>
+      </div>
+
+    </div><!-- /phone -->
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/rider.js"></script>
+</body>
+</html>

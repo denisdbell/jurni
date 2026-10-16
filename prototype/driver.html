@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jurni — Driver</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/phone.css" />
+</head>
+<body>
+  <div class="stage">
+    <div class="phone">
+      <div class="statusbar">
+        <span id="sb-brand"></span>
+        <span class="sb-icons">9:41 · 📶 🔋</span>
+      </div>
+
+      <div class="screens">
+
+        <!-- 1 ─ Login -->
+        <section class="screen active" id="scr-login">
+          <div class="phero map-texture">
+            <div id="login-brand" style="margin-bottom:16px"></div>
+            <h1>Driver sign in</h1>
+            <p>Earn on your schedule. Sign in to start accepting rides.</p>
+          </div>
+          <div class="screen__body">
+            <div class="field">
+              <label>Phone number</label>
+              <input class="input" type="tel" value="876-555-0101" />
+            </div>
+            <div class="field">
+              <label>Password</label>
+              <input class="input" type="password" value="••••••••" />
+            </div>
+            <p class="tiny muted">New driver? <a style="color:var(--teal);font-weight:600" data-goto="scr-docs">Sign up & upload documents</a></p>
+          </div>
+          <div class="screen__footer">
+            <button class="btn btn--primary btn--block btn--lg" data-goto="scr-home">Sign in</button>
+          </div>
+        </section>
+
+        <!-- 2 ─ Document upload -->
+        <section class="screen" id="scr-docs">
+          <div class="appbar">
+            <button class="appbar__back" data-goto="scr-login">←</button>
+            <span class="appbar__title">Get approved to drive</span>
+          </div>
+          <div class="screen__body">
+            <p class="muted small" style="margin-bottom:14px">Upload your documents. A Jurni admin reviews and approves your account before you can go online.</p>
+
+            <div class="upload-tile" data-doc style="margin-bottom:10px">
+              <div class="ic">🪪</div>
+              <div class="grow"><div class="bold small">Driver's licence</div><div class="tiny muted doc-status">No file chosen</div></div>
+              <button class="btn btn--ghost btn--sm doc-btn">Upload</button>
+            </div>
+            <div class="upload-tile" data-doc style="margin-bottom:10px">
+              <div class="ic">📄</div>
+              <div class="grow"><div class="bold small">Vehicle registration</div><div class="tiny muted doc-status">No file chosen</div></div>
+              <button class="btn btn--ghost btn--sm doc-btn">Upload</button>
+            </div>
+            <div class="upload-tile" data-doc>
+              <div class="ic">🛡️</div>
+              <div class="grow"><div class="bold small">Insurance</div><div class="tiny muted doc-status">No file chosen</div></div>
+              <button class="btn btn--ghost btn--sm doc-btn">Upload</button>
+            </div>
+
+            <div class="card mt-md" id="approval-note" style="background:var(--mint);border-color:#cfe6e4">
+              <div class="small"><strong>Status:</strong> <span id="docs-overall">Upload all 3 documents to submit.</span></div>
+            </div>
+          </div>
+          <div class="screen__footer">
+            <button class="btn btn--primary btn--block btn--lg" id="btn-submit-docs" disabled>Submit for approval</button>
+          </div>
+        </section>
+
+        <!-- 3 ─ Pending approval -->
+        <section class="screen" id="scr-pending">
+          <div class="appbar">
+            <span class="appbar__title">Application submitted</span>
+          </div>
+          <div class="screen__body center" style="display:flex;flex-direction:column;align-items:center;justify-content:center">
+            <div style="font-size:54px">⏳</div>
+            <h2 style="margin-top:12px">Your request is pending approval</h2>
+            <p class="muted" style="margin-top:10px;max-width:300px">
+              A Jurni admin is reviewing your licence, registration & insurance.
+              You'll be notified once your account is approved — usually within 24 hours.
+            </p>
+            <div class="card mt-lg" style="width:100%;text-align:left;background:var(--mint);border-color:#cfe6e4">
+              <div class="row">
+                <span class="status-dot" style="background:var(--warn)"></span>
+                <div class="small"><strong>Status:</strong> Pending review</div>
+              </div>
+            </div>
+          </div>
+          <div class="screen__footer">
+            <button class="btn btn--primary btn--block" data-goto="scr-home">Continue (demo: approved)</button>
+            <button class="btn btn--ghost btn--block" data-goto="scr-login" style="margin-top:8px">Back to sign in</button>
+          </div>
+        </section>
+
+        <!-- 4 ─ Home (online toggle + requests) -->
+        <section class="screen" id="scr-home">
+          <div class="appbar">
+            <span class="appbar__title">Driver</span>
+            <span class="appbar__spacer"></span>
+            <button class="btn btn--ghost btn--sm" data-goto="scr-earnings">Earnings</button>
+          </div>
+          <div class="screen__body">
+            <div class="card">
+              <div class="row row--between">
+                <div class="row">
+                  <span class="status-dot" id="online-dot"></span>
+                  <div>
+                    <div class="bold" id="online-label">You're offline</div>
+                    <div class="tiny muted" id="online-sub">Go online to receive ride requests</div>
+                  </div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="online-toggle" />
+                  <span class="track"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="row row--between mt-md" style="padding:0 2px">
+              <span class="eyebrow">Nearby requests</span>
+              <span class="pill pill--muted" id="req-count">0</span>
+            </div>
+
+            <div id="offline-empty" class="card center" style="margin-top:10px;padding:30px 16px">
+              <div style="font-size:34px">😴</div>
+              <p class="muted small mt-sm">You're offline. Flip the switch to see requests.</p>
+            </div>
+
+            <ul id="request-list" class="hidden" style="margin-top:4px"></ul>
+          </div>
+        </section>
+
+        <!-- 4 ─ Request detail -->
+        <section class="screen" id="scr-request">
+          <div class="appbar">
+            <button class="appbar__back" data-goto="scr-home">←</button>
+            <span class="appbar__title">Ride request</span>
+          </div>
+          <div class="screen__body">
+            <div class="card">
+              <div class="row">
+                <div class="avatar" id="rq-avatar" style="background:var(--mint);color:var(--teal-700)">A</div>
+                <div class="grow">
+                  <div class="bold" id="rq-rider">Rider</div>
+                  <div class="small muted" id="rq-rating"></div>
+                </div>
+                <a class="btn btn--ghost btn--sm" id="rq-note-pill" style="pointer-events:none">Note</a>
+              </div>
+              <div class="route-select mt-md">
+                <div class="route-pin"><span class="dot"></span><div class="bold" id="rq-from">—</div></div>
+                <div class="route-line"></div>
+                <div class="route-pin"><span class="dot dest"></span><div class="bold" id="rq-to">—</div></div>
+              </div>
+            </div>
+
+            <div class="fare-line mt-md">
+              <span class="muted">Recommended fare</span>
+              <span class="amount" id="rq-fare">—</span>
+            </div>
+            <div class="row row--between mt-sm">
+              <span class="muted small">Rider note</span>
+              <span class="small" id="rq-note">—</span>
+            </div>
+
+            <div class="field mt-md">
+              <label>Counter offer (optional)</label>
+              <input class="input" id="rq-counter" type="number" inputmode="numeric" placeholder="Propose a different fare" />
+            </div>
+          </div>
+          <div class="screen__footer">
+            <div style="display:flex;gap:10px">
+              <button class="btn btn--ghost" style="flex:1" id="btn-counter">Counter</button>
+              <button class="btn btn--primary" style="flex:2" id="btn-accept">Accept ride</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5 ─ En route to pickup -->
+        <section class="screen" id="scr-enroute">
+          <div class="appbar">
+            <span class="appbar__title">Heading to pickup</span>
+            <span class="appbar__spacer"></span>
+            <span class="pill pill--ok">Accepted</span>
+          </div>
+          <div class="screen__body">
+            <div class="driver-card">
+              <div class="row">
+                <div class="avatar" id="er-avatar" style="background:var(--aqua);color:var(--teal-deep)">A</div>
+                <div class="grow">
+                  <div class="bold" id="er-rider">Rider</div>
+                  <div class="small muted" id="er-route">—</div>
+                </div>
+                <a class="btn btn--primary btn--sm" id="er-call" href="tel:0">📞 Call</a>
+              </div>
+              <div class="distance-panel mt-md">
+                <div class="distance-bar"><span id="er-fill"></span></div>
+                <div class="labels">
+                  <span id="er-state">Driving to pickup</span>
+                  <span class="bold" id="er-away">~2.5 km away</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card mt-md">
+              <div class="row row--between">
+                <div class="row">
+                  <span>📡</span>
+                  <div>
+                    <div class="bold small">Share my GPS position</div>
+                    <div class="tiny muted">So the rider can see you approach</div>
+                  </div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" id="gps-toggle" checked />
+                  <span class="track"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="small muted mt-md" style="padding:0 2px 6px">Navigate to pickup</div>
+            <div class="nav-apps">
+              <button class="nav-app" data-nav="Waze" data-nav-to="pickup"><span class="ic">🧭</span><span>Open in Waze</span></button>
+              <button class="nav-app" data-nav="Google Maps" data-nav-to="pickup"><span class="ic">🗺️</span><span>Open in Maps</span></button>
+            </div>
+
+            <div class="card mt-md">
+              <div class="row row--between"><span class="muted small">Agreed fare</span><span class="amount" id="er-fare">—</span></div>
+              <div class="row row--between mt-sm"><span class="muted small">Payment</span><span class="pill pill--muted">💵 Collect cash</span></div>
+            </div>
+          </div>
+          <div class="screen__footer">
+            <div style="display:flex;gap:10px">
+              <button class="sos-btn" style="flex:1" data-modal-open="sos-modal">🛡️ SOS</button>
+              <button class="btn btn--primary" style="flex:2" id="btn-start-trip" disabled>Arrived — start trip</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6 ─ In trip -->
+        <section class="screen" id="scr-intrip">
+          <div class="appbar">
+            <span class="appbar__title">Trip in progress</span>
+            <span class="appbar__spacer"></span>
+            <span class="pill pill--ok">On trip</span>
+          </div>
+          <div class="screen__body">
+            <div class="driver-card">
+              <div class="row">
+                <div class="avatar" id="it-avatar" style="background:var(--aqua);color:var(--teal-deep)">A</div>
+                <div class="grow">
+                  <div class="bold" id="it-dest">To destination</div>
+                  <div class="small muted" id="it-rider-sub">—</div>
+                </div>
+              </div>
+              <div class="distance-panel mt-md">
+                <div class="distance-bar"><span id="it-fill"></span></div>
+                <div class="labels">
+                  <span id="it-state">Driving to destination</span>
+                  <span class="bold" id="it-away">~5.0 km</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="small muted mt-md" style="padding:0 2px 6px">Navigate to destination</div>
+            <div class="nav-apps">
+              <button class="nav-app" data-nav="Waze" data-nav-to="destination"><span class="ic">🧭</span><span>Open in Waze</span></button>
+              <button class="nav-app" data-nav="Google Maps" data-nav-to="destination"><span class="ic">🗺️</span><span>Open in Maps</span></button>
+            </div>
+
+            <div class="card mt-md">
+              <div class="row row--between"><span class="muted small">Route</span><span class="small bold" id="it-route">—</span></div>
+              <div class="row row--between mt-sm"><span class="muted small">Rider</span><span class="bold" id="it-rider">—</span></div>
+              <div class="row row--between mt-sm"><span class="muted small">Collect (cash)</span><span class="amount" id="it-fare">—</span></div>
+            </div>
+          </div>
+          <div class="screen__footer">
+            <div style="display:flex;gap:10px">
+              <button class="sos-btn" style="flex:1" data-modal-open="sos-modal">🛡️ SOS</button>
+              <button class="btn btn--ok" style="flex:2" id="btn-complete">Complete trip</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7 ─ Rate rider -->
+        <section class="screen" id="scr-rate">
+          <div class="appbar"><span class="appbar__title">Trip complete</span></div>
+          <div class="screen__body">
+            <div class="center" style="padding:10px 0">
+              <div style="font-size:46px">✅</div>
+              <h2 style="margin-top:8px">Nice trip!</h2>
+              <p class="muted small">You collected <span class="bold" id="rate-collected">—</span> in cash.</p>
+            </div>
+            <div class="card mt-md center">
+              <div class="bold" style="margin-bottom:10px">Rate your rider</div>
+              <div id="rate-rider" style="justify-content:center;display:flex"></div>
+            </div>
+          </div>
+          <div class="screen__footer">
+            <button class="btn btn--primary btn--block btn--lg" id="btn-finish-trip">Submit & go online</button>
+          </div>
+        </section>
+
+        <!-- 8 ─ Earnings -->
+        <section class="screen" id="scr-earnings">
+          <div class="appbar">
+            <button class="appbar__back" data-goto="scr-home">←</button>
+            <span class="appbar__title">Earnings</span>
+          </div>
+          <div class="screen__body">
+            <div class="driver-card center">
+              <div class="small muted">Today's earnings</div>
+              <div style="font-size:38px;font-weight:800;letter-spacing:-.02em" id="earn-total">JMD 0</div>
+              <div class="small muted"><span id="earn-count">0</span> trips · cash</div>
+            </div>
+            <div class="eyebrow mt-md" style="display:block;padding:0 2px">Completed trips</div>
+            <ul id="earn-list" style="margin-top:6px"></ul>
+          </div>
+        </section>
+
+      </div><!-- /screens -->
+
+      <!-- SOS modal -->
+      <div class="modal" id="sos-modal">
+        <div class="modal__sheet">
+          <div class="modal__grip"></div>
+          <h2 style="margin-bottom:4px">Emergency / SOS</h2>
+          <p class="muted small" style="margin-bottom:16px">Choose an action. Your location is captured when you tap.</p>
+
+          <a class="card row" href="tel:911" style="margin-bottom:10px;text-decoration:none">
+            <div class="avatar" style="background:var(--danger)">📞</div>
+            <div class="grow"><div class="bold">Call 911</div><div class="tiny muted">Dial Jamaica emergency services now.</div></div>
+            <span style="color:var(--muted)">›</span>
+          </a>
+          <button class="card row" id="sos-alert" style="width:100%;text-align:left;border:1px solid var(--border);background:var(--card);margin-bottom:10px">
+            <div class="avatar" style="background:var(--warn)">🚨</div>
+            <div class="grow"><div class="bold">Alert Jurni admin</div><div class="tiny muted">Send your identity, trip details & GPS.</div></div>
+            <span style="color:var(--muted)">›</span>
+          </button>
+          <button class="card row" id="sos-report" style="width:100%;text-align:left;border:1px solid var(--border);background:var(--card);margin-bottom:10px">
+            <div class="avatar" style="background:var(--teal)">⚠️</div>
+            <div class="grow"><div class="bold">Report activity</div><div class="tiny muted">Flag an unsafe or suspicious rider.</div></div>
+            <span style="color:var(--muted)">›</span>
+          </button>
+          <div id="report-box" class="hidden" style="margin:4px 0 10px">
+            <div class="field" style="margin-bottom:8px">
+              <label>What happened?</label>
+              <textarea class="textarea" id="report-note" placeholder="Describe the issue…"></textarea>
+            </div>
+            <button class="btn btn--danger btn--block" id="sos-report-send">Send report to admin</button>
+          </div>
+          <button class="btn btn--ghost btn--block" data-modal-close="sos-modal">Cancel</button>
+        </div>
+      </div>
+
+    </div><!-- /phone -->
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/driver.js"></script>
+</body>
+</html>

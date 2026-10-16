@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jurni — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+  <div class="admin">
+    <!-- Sidebar -->
+    <aside class="sidebar map-texture">
+      <div class="sidebar__brand">
+        <div id="sb-brand"></div>
+        <div class="tag">Admin console</div>
+      </div>
+      <button class="nav-item active" data-view="v-overview"><span class="ic">▦</span><span class="txt">Overview</span></button>
+      <button class="nav-item" data-view="v-verify"><span class="ic">🪪</span><span class="txt">Verifications</span><span class="badge" id="nav-verify-badge">0</span></button>
+      <button class="nav-item" data-view="v-users"><span class="ic">👥</span><span class="txt">Users</span></button>
+      <button class="nav-item" data-view="v-fares"><span class="ic">💱</span><span class="txt">Zone fares</span></button>
+      <button class="nav-item" data-view="v-rides"><span class="ic">🚗</span><span class="txt">Rides</span></button>
+      <button class="nav-item" data-view="v-alerts"><span class="ic">🚨</span><span class="txt">Emergency</span><span class="badge" id="nav-alert-badge">0</span></button>
+
+      <div class="sidebar__foot">
+        <a href="index.html" style="color:var(--on-teal-dim)">← Prototype home</a>
+        <div style="margin-top:8px">
+          <button class="btn btn--ghost-teal btn--sm" id="btn-reset" style="width:100%">Reset demo data</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <header class="topbar">
+        <h1 id="view-title">Overview</h1>
+        <span class="spacer"></span>
+        <span class="pill">Kingston · St. Andrew · Portmore</span>
+      </header>
+
+      <div class="content">
+
+        <!-- Overview -->
+        <section class="view active" id="v-overview">
+          <div class="stat-grid">
+            <div class="stat"><div class="label">Total users</div><div class="value" id="st-users">0</div><div class="foot muted">riders + drivers</div></div>
+            <div class="stat"><div class="label">Active drivers</div><div class="value" id="st-drivers">0</div><div class="foot" style="color:var(--ok)">online capable</div></div>
+            <div class="stat accent"><div class="label">Rides logged</div><div class="value" id="st-rides">0</div><div class="foot">today & recent</div></div>
+            <div class="stat"><div class="label">Pending verifications</div><div class="value" id="st-pending">0</div><div class="foot muted">awaiting review</div></div>
+            <div class="stat alert"><div class="label">Open SOS alerts</div><div class="value" id="st-alerts">0</div><div class="foot muted">need acknowledgement</div></div>
+          </div>
+
+          <div class="panel">
+            <div class="panel__head"><h2>Recent activity</h2><span class="spacer"></span><button class="btn btn--ghost btn--sm" data-view="v-rides">View all rides</button></div>
+            <div class="panel__body"><div class="matrix-wrap"><table class="table" id="tbl-recent"></table></div></div>
+          </div>
+        </section>
+
+        <!-- Verifications -->
+        <section class="view" id="v-verify">
+          <div class="panel">
+            <div class="panel__head"><h2>Verification queue</h2><span class="spacer"></span><span class="pill pill--warn" id="verify-count">0 pending</span></div>
+            <div class="panel__body"><table class="table" id="tbl-verify"></table></div>
+          </div>
+        </section>
+
+        <!-- Users -->
+        <section class="view" id="v-users">
+          <div class="panel">
+            <div class="panel__head">
+              <h2>Users</h2><span class="spacer"></span>
+              <input class="input" id="user-search" placeholder="Search name or role…" style="max-width:260px;padding:9px 12px" />
+            </div>
+            <div class="panel__body"><table class="table" id="tbl-users"></table></div>
+          </div>
+        </section>
+
+        <!-- Zone fares -->
+        <section class="view" id="v-fares">
+          <div class="panel">
+            <div class="panel__head">
+              <h2>Zone fare table</h2><span class="spacer"></span>
+              <span class="pill">JMD</span>
+              <button class="btn btn--primary btn--sm" id="btn-save-fares">Save changes</button>
+            </div>
+            <div class="panel__body">
+              <p class="muted small" style="margin:4px 0 14px">Recommended fare (JMD) between each pair of areas. Riders and drivers can still negotiate. Edit any cell and save.</p>
+              <div class="matrix-wrap"><table class="matrix" id="fare-matrix"></table></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Rides -->
+        <section class="view" id="v-rides">
+          <div class="panel">
+            <div class="panel__head"><h2>Rides & activity</h2><span class="spacer"></span><span class="pill pill--muted" id="rides-count">0</span></div>
+            <div class="panel__body"><table class="table" id="tbl-rides"></table></div>
+          </div>
+        </section>
+
+        <!-- Emergency -->
+        <section class="view" id="v-alerts">
+          <div class="panel">
+            <div class="panel__head"><h2>Emergency alerts & reports</h2><span class="spacer"></span><span class="pill pill--danger" id="alerts-open">0 open</span></div>
+            <div class="panel__body"><div id="alert-list"></div></div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
