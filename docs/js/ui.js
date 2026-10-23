@@ -172,6 +172,30 @@ const UI = (function () {
     return `Today ${hh}:${mm}`;
   }
 
+  /* ---------- profile avatar ("photo") ----------
+     Renders a person's headshot photo inside a circle, over a brand-tinted
+     gradient that shows while the image loads. Optionally adds a status ring
+     and a corner badge (e.g. a vehicle for drivers, or a ✓ for verified).
+     `person` may be a name string, a {name, role} object, or a raw
+     {photo, bg} spec. */
+  function avatar(person, size = 46, opts = {}) {
+    let spec = person;
+    if (!person || !person.photo || !person.bg) {
+      const name = typeof person === "string" ? person : (person && person.name);
+      const role = opts.role || (person && person.role);
+      spec = typeof avatarSpec === "function"
+        ? avatarSpec(name, role)
+        : { photo: "img/avatars/generic.jpg", bg: ["#0e5a68", "#4fc3d4"] };
+    }
+    const [c1, c2] = spec.bg;
+    const badge = opts.badge
+      ? `<span class="ava__badge">${opts.badge}</span>`
+      : opts.verified ? `<span class="ava__badge ava__badge--ok">✓</span>` : "";
+    const ring = opts.ring ? " ava--ring" : "";
+    return `<span class="ava${ring}" style="--s:${size}px;--a:${c1};--b:${c2}" aria-hidden="true">` +
+      `<img class="ava__img" src="${spec.photo}" alt="" loading="lazy" decoding="async">${badge}</span>`;
+  }
+
   /* ---------- the jurni wordmark (inline SVG) ----------
      variant: "light" (on dark teal) | "dark" (on light bg)
      size: pixel height of the wordmark text */
@@ -200,6 +224,6 @@ const UI = (function () {
   return {
     $, $$, jmd, starStr, renderStars, toast,
     showScreen, wireNav, openModal, closeModal, wireModals,
-    wireStarInput, captureGps, nowLabel, logo, makeTypeahead,
+    wireStarInput, captureGps, nowLabel, logo, makeTypeahead, avatar,
   };
 })();

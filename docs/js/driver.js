@@ -3,12 +3,16 @@
    ------------------------------------------------------------------ */
 (function () {
   const { $, $$, jmd, toast, showScreen, wireNav, wireModals, closeModal,
-          wireStarInput, captureGps, nowLabel, logo, renderStars } = UI;
+          wireStarInput, captureGps, nowLabel, logo, renderStars, avatar } = UI;
 
   const ME = DRIVERS[0]; // the signed-in driver (Marlon)
 
   $("#sb-brand").innerHTML = logo("light", 15, false);
   $("#login-brand").innerHTML = logo("light", 26, true);
+
+  /* Driver's own profile "photo" — fits them on login & home */
+  $("#login-ava").innerHTML = avatar(ME.name, 60, { role: "Driver", badge: "🚗" });
+  $("#home-ava").innerHTML = avatar(ME.name, 46, { role: "Driver", verified: true });
   wireNav(document);
   wireModals();
 
@@ -69,7 +73,7 @@
       li.innerHTML = `
         <div class="row row--between">
           <div class="row">
-            <div class="avatar" style="background:var(--mint);color:var(--teal-700)">${r.rider[0]}</div>
+            ${avatar(r.rider, 44, { role: "Rider" })}
             <div>
               <div class="bold small">${r.rider} · ${renderStars(r.riderRating)}</div>
               <div class="tiny muted">${r.from} → ${r.to}</div>
@@ -86,7 +90,7 @@
 
   function openRequest(r) {
     activeReq = { ...r };
-    $("#rq-avatar").textContent = r.rider[0];
+    $("#rq-avatar").innerHTML = avatar(r.rider, 46, { role: "Rider" });
     $("#rq-rider").textContent = r.rider;
     $("#rq-rating").innerHTML = `${renderStars(r.riderRating)} ${r.riderRating}`;
     $("#rq-from").textContent = r.from;
@@ -113,7 +117,7 @@
 
   /* ---------- en route to pickup ---------- */
   function goEnroute() {
-    $("#er-avatar").textContent = activeReq.rider[0];
+    $("#er-avatar").innerHTML = avatar(activeReq.rider, 46, { role: "Rider" });
     $("#er-rider").textContent = activeReq.rider;
     $("#er-route").textContent = `${activeReq.from} → ${activeReq.to}`;
     $("#er-fare").textContent = jmd(activeReq.fare);
@@ -163,7 +167,7 @@
 
   /* ---------- in trip: driving the rider to the destination (leg 2) ---------- */
   $("#btn-start-trip").addEventListener("click", () => {
-    $("#it-avatar").textContent = activeReq.rider[0];
+    $("#it-avatar").innerHTML = avatar(activeReq.rider, 46, { role: "Rider" });
     $("#it-dest").textContent = `To ${activeReq.to}`;
     $("#it-rider-sub").textContent = `${activeReq.rider} · ${activeReq.from} → ${activeReq.to}`;
     $("#it-route").textContent = `${activeReq.from} → ${activeReq.to}`;
@@ -203,6 +207,10 @@
   $("#btn-complete").addEventListener("click", () => {
     clearInterval(itTimer);
     $("#rate-collected").textContent = jmd(activeReq.fare);
+    $("#rate-rider-who").innerHTML =
+      `${avatar(activeReq.rider, 52, { role: "Rider" })}` +
+      `<div class="bold" style="margin-top:8px">${activeReq.rider}</div>` +
+      `<div class="tiny muted">${activeReq.from} → ${activeReq.to}</div>`;
     showScreen("scr-rate");
   });
 
@@ -228,27 +236,79 @@
   });
 
   /* ---------- earnings ---------- */
+  const DAILY_GOAL = 6000;
+  const WEEK = [
+    { day: "Mon", amt: 4200 }, { day: "Tue", amt: 5100 },
+    { day: "Wed", amt: 3800 }, { day: "Thu", amt: 6400 },
+    { day: "Fri", amt: 7200 }, { day: "Sat", amt: 8100 },
+  ];
+
   function renderEarnings() {
     const ul = $("#earn-list");
     ul.innerHTML = "";
-    let total = 0;
+    let fares = 0;
     earnings.forEach((e) => {
-      total += e.fare;
+      fares += e.fare;
       const li = document.createElement("li");
       li.className = "litem";
       li.innerHTML = `
-        <div class="avatar" style="background:var(--mint);color:var(--teal-700)">✓</div>
+        ${avatar(e.rider, 42, { role: "Rider" })}
         <div class="litem__main">
           <div class="litem__title">${e.from} → ${e.to}</div>
-          <div class="litem__sub">${e.rider} · ${e.time}</div>
+          <div class="litem__sub">🧍 ${e.rider} · ⏱️ ${e.time}</div>
         </div>
-        <div class="amount">${jmd(e.fare)}</div>`;
+        <div class="amount" style="color:var(--ok)">+${jmd(e.fare)}</div>`;
       ul.appendChild(li);
     });
-    $("#earn-total").textContent = jmd(total);
+
+    const tips = Math.round(fares * 0.06);
+    const bonus = earnings.length >= 4 ? 800 : earnings.length >= 2 ? 400 : 0;
+    const grand = fares + tips + bonus;
+
+    /* hero */
+    $("#earn-total").textContent = jmd(fares);
     $("#earn-count").textContent = earnings.length;
+    $("#earn-rating").textContent = ME.rating;
+    $("#earn-tips").textContent = jmd(tips);
+
+    /* daily goal */
+    const pct = Math.min(100, Math.round((fares / DAILY_GOAL) * 100));
+    $("#goal-have").textContent = jmd(fares);
+    $("#goal-target").textContent = jmd(DAILY_GOAL);
+    $("#goal-fill").style.width = pct + "%";
+    $("#goal-msg").innerHTML =
+      pct >= 100 ? "Goal smashed! 🎉🏆 You're on fire today."
+      : pct >= 80 ? "Almost there! 🔥 Just a little more."
+      : pct >= 40 ? "Over halfway — keep it up! 💪"
+      : "Let's get rolling! 🚗💨";
+
+    /* breakdown */
+    $("#brk-fares").textContent = jmd(fares);
+    $("#brk-tips").textContent = jmd(tips);
+    $("#brk-bonus").textContent = jmd(bonus);
+    $("#brk-total").textContent = jmd(grand);
+
+    /* weekly chart — today's live total is appended as the last bar */
+    const week = [...WEEK, { day: "Now", amt: fares, active: true }];
+    const max = Math.max(...week.map((w) => w.amt), DAILY_GOAL);
+    $("#week-total").textContent = jmd(week.reduce((s, w) => s + w.amt, 0));
+    $("#week-chart").innerHTML = week.map((w) => {
+      const h = Math.max(6, Math.round((w.amt / max) * 100));
+      return `<div class="wk ${w.active ? "wk--on" : ""}">
+          <span class="wk__val">${(w.amt / 1000).toFixed(1)}k</span>
+          <div class="wk__track"><span class="wk__bar" style="height:${h}%"></span></div>
+          <span class="wk__day">${w.day}</span>
+        </div>`;
+    }).join("");
+
+    /* cash out */
+    $("#btn-cashout").textContent = `💸 Cash out ${jmd(grand)}`;
   }
   renderEarnings();
+
+  $("#btn-cashout").addEventListener("click", () => {
+    toast("Cash-out requested — paid to your account 💸", "ok");
+  });
 
   /* ---------- SOS ---------- */
   function raise(type, note) {

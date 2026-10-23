@@ -24,8 +24,13 @@
         <section class="screen active" id="scr-login">
           <div class="phero map-texture">
             <div id="login-brand" style="margin-bottom:16px"></div>
-            <h1>Driver sign in</h1>
-            <p>Earn on your schedule. Sign in to start accepting rides.</p>
+            <div class="welcome-row">
+              <span id="login-ava"></span>
+              <div>
+                <h1>Welcome back, Marlon 👋</h1>
+                <p>Earn on your schedule. Sign in to start accepting rides.</p>
+              </div>
+            </div>
           </div>
           <div class="screen__body">
             <div class="field">
@@ -62,14 +67,20 @@
               <div class="grow"><div class="bold small">Vehicle registration</div><div class="tiny muted doc-status">No file chosen</div></div>
               <button class="btn btn--ghost btn--sm doc-btn">Upload</button>
             </div>
-            <div class="upload-tile" data-doc>
+            <div class="upload-tile" data-doc style="margin-bottom:10px">
               <div class="ic">🛡️</div>
               <div class="grow"><div class="bold small">Insurance</div><div class="tiny muted doc-status">No file chosen</div></div>
               <button class="btn btn--ghost btn--sm doc-btn">Upload</button>
             </div>
+            <div class="upload-tile" data-doc>
+              <div class="ic">👮</div>
+              <div class="grow"><div class="bold small">Police record</div><div class="tiny muted doc-status">No file chosen</div></div>
+              <button class="btn btn--ghost btn--sm doc-btn">Upload</button>
+            </div>
 
             <div class="card mt-md" id="approval-note" style="background:var(--mint);border-color:#cfe6e4">
-              <div class="small"><strong>Status:</strong> <span id="docs-overall">Upload all 3 documents to submit.</span></div>
+              <div class="small"><strong>Status:</strong> <span id="docs-overall">Upload all 4 documents to submit.</span></div>
+              <div class="tiny muted" style="margin-top:6px">🛡️ Your police record is checked so riders know every Jurni driver is background-verified before carrying passengers.</div>
             </div>
           </div>
           <div class="screen__footer">
@@ -86,7 +97,7 @@
             <div style="font-size:54px">⏳</div>
             <h2 style="margin-top:12px">Your request is pending approval</h2>
             <p class="muted" style="margin-top:10px;max-width:300px">
-              A Jurni admin is reviewing your licence, registration & insurance.
+              A Jurni admin is reviewing your licence, registration, insurance & police record.
               You'll be notified once your account is approved — usually within 24 hours.
             </p>
             <div class="card mt-lg" style="width:100%;text-align:left;background:var(--mint);border-color:#cfe6e4">
@@ -110,6 +121,14 @@
             <button class="btn btn--ghost btn--sm" data-goto="scr-earnings">Earnings</button>
           </div>
           <div class="screen__body">
+            <div class="profile-chip">
+              <span id="home-ava"></span>
+              <div class="grow">
+                <div class="bold">Marlon 👋</div>
+                <div class="tiny muted">⭐ 4.8 · Toyota Axio · 1234 AB</div>
+              </div>
+              <span class="pill pill--ok">Approved ✓</span>
+            </div>
             <div class="card">
               <div class="row row--between">
                 <div class="row">
@@ -149,7 +168,7 @@
           <div class="screen__body">
             <div class="card">
               <div class="row">
-                <div class="avatar" id="rq-avatar" style="background:var(--mint);color:var(--teal-700)">A</div>
+                <span id="rq-avatar"></span>
                 <div class="grow">
                   <div class="bold" id="rq-rider">Rider</div>
                   <div class="small muted" id="rq-rating"></div>
@@ -195,7 +214,7 @@
           <div class="screen__body">
             <div class="driver-card">
               <div class="row">
-                <div class="avatar" id="er-avatar" style="background:var(--aqua);color:var(--teal-deep)">A</div>
+                <span id="er-avatar"></span>
                 <div class="grow">
                   <div class="bold" id="er-rider">Rider</div>
                   <div class="small muted" id="er-route">—</div>
@@ -256,7 +275,7 @@
           <div class="screen__body">
             <div class="driver-card">
               <div class="row">
-                <div class="avatar" id="it-avatar" style="background:var(--aqua);color:var(--teal-deep)">A</div>
+                <span id="it-avatar"></span>
                 <div class="grow">
                   <div class="bold" id="it-dest">To destination</div>
                   <div class="small muted" id="it-rider-sub">—</div>
@@ -301,6 +320,7 @@
               <p class="muted small">You collected <span class="bold" id="rate-collected">—</span> in cash.</p>
             </div>
             <div class="card mt-md center">
+              <div class="rate-who" id="rate-rider-who"></div>
               <div class="bold" style="margin-bottom:10px">Rate your rider</div>
               <div id="rate-rider" style="justify-content:center;display:flex"></div>
             </div>
@@ -314,16 +334,70 @@
         <section class="screen" id="scr-earnings">
           <div class="appbar">
             <button class="appbar__back" data-goto="scr-home">←</button>
-            <span class="appbar__title">Earnings</span>
+            <span class="appbar__title">💰 Earnings</span>
           </div>
           <div class="screen__body">
-            <div class="driver-card center">
-              <div class="small muted">Today's earnings</div>
-              <div style="font-size:38px;font-weight:800;letter-spacing:-.02em" id="earn-total">JMD 0</div>
-              <div class="small muted"><span id="earn-count">0</span> trips · cash</div>
+
+            <!-- Hero -->
+            <div class="earn-hero map-texture">
+              <div class="earn-hero__top">
+                <span class="earn-hero__emoji">💰</span>
+                <div class="grow">
+                  <div class="earn-hero__label">Today's earnings</div>
+                  <div class="earn-hero__total" id="earn-total">JMD 0</div>
+                </div>
+                <span class="trend-chip" id="earn-trend">▲ 12%</span>
+              </div>
+              <div class="earn-quick">
+                <div class="earn-quick__item"><span class="e">🚗</span><b id="earn-count">0</b><small>trips</small></div>
+                <div class="earn-quick__item"><span class="e">⏱️</span><b id="earn-hours">5.5h</b><small>online</small></div>
+                <div class="earn-quick__item"><span class="e">⭐</span><b id="earn-rating">4.8</b><small>rating</small></div>
+                <div class="earn-quick__item"><span class="e">🎁</span><b id="earn-tips">JMD 0</b><small>tips</small></div>
+              </div>
             </div>
-            <div class="eyebrow mt-md" style="display:block;padding:0 2px">Completed trips</div>
+
+            <!-- Daily goal -->
+            <div class="card mt-md goal-card">
+              <div class="row row--between">
+                <div class="bold">🎯 Daily goal</div>
+                <div class="small muted"><span id="goal-have">JMD 0</span> / <span id="goal-target">JMD 6,000</span></div>
+              </div>
+              <div class="goal-bar mt-sm"><span id="goal-fill"></span></div>
+              <div class="small mt-sm" id="goal-msg">Keep going — you've got this! 💪</div>
+            </div>
+
+            <!-- Achievements -->
+            <div class="badge-row mt-md">
+              <div class="achv"><span class="achv__e">🔥</span><div><b>5-day</b><small>streak</small></div></div>
+              <div class="achv"><span class="achv__e">🏆</span><div><b>Top 10%</b><small>this week</small></div></div>
+              <div class="achv"><span class="achv__e">⚡</span><div><b>Fast</b><small>accepter</small></div></div>
+            </div>
+
+            <!-- Weekly chart -->
+            <div class="card mt-md">
+              <div class="row row--between">
+                <div class="bold">📊 This week</div>
+                <div class="small muted">Total <b id="week-total">JMD 0</b></div>
+              </div>
+              <div class="week-chart" id="week-chart"></div>
+            </div>
+
+            <!-- Breakdown -->
+            <div class="card mt-md">
+              <div class="bold" style="margin-bottom:8px">🧾 Breakdown</div>
+              <div class="brk"><span>💵 Fares</span><b id="brk-fares">JMD 0</b></div>
+              <div class="brk"><span>🎁 Tips</span><b id="brk-tips">JMD 0</b></div>
+              <div class="brk"><span>✨ Bonuses</span><b id="brk-bonus">JMD 0</b></div>
+              <div class="brk brk--total"><span>Total earned</span><b id="brk-total">JMD 0</b></div>
+            </div>
+
+            <!-- Trips -->
+            <div class="eyebrow mt-md" style="display:block;padding:0 2px">🚕 Completed trips</div>
             <ul id="earn-list" style="margin-top:6px"></ul>
+
+          </div>
+          <div class="screen__footer">
+            <button class="btn btn--primary btn--block btn--lg" id="btn-cashout">💸 Cash out</button>
           </div>
         </section>
 

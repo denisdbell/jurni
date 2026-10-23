@@ -21,29 +21,122 @@
 
       <div class="screens">
 
-        <!-- 1 ─ Phone login -->
-        <section class="screen active" id="scr-login">
+        <!-- 1 ─ Welcome / choose how to join -->
+        <section class="screen active" id="scr-auth">
           <div class="phero map-texture">
-            <div id="login-brand" style="margin-bottom:16px"></div>
-            <h1>Welcome 👋</h1>
-            <p>Sign in with your phone number to request a ride.</p>
+            <div id="auth-brand" style="margin-bottom:18px"></div>
+            <h1>Move with ease — and peace of mind</h1>
+            <p>Join Jurni to request safe, fairly-priced rides across Kingston, St. Andrew &amp; Portmore.</p>
+            <div class="trust-row">
+              <span class="pill pill--teal">🛡️ Background-checked drivers</span>
+              <span class="pill pill--teal">🪪 Verified riders</span>
+            </div>
           </div>
           <div class="screen__body">
+            <button class="btn btn--google btn--block btn--lg" data-goto="scr-gphone">Continue with Google</button>
+            <div class="or-divider">or</div>
+            <button class="btn btn--primary btn--block btn--lg" data-goto="scr-signup">Sign up with email</button>
+            <p class="center small muted" style="margin-top:16px">Already have an account?
+              <a style="color:var(--teal);font-weight:700" data-goto="scr-login">Log in</a>
+            </p>
+            <p class="tiny muted center" style="margin-top:18px">🔒 Every driver's identity &amp; criminal record is verified before they can carry passengers.</p>
+          </div>
+        </section>
+
+        <!-- 2 ─ Create account (email) -->
+        <section class="screen" id="scr-signup">
+          <div class="appbar">
+            <button class="appbar__back" data-goto="scr-auth">←</button>
+            <span class="appbar__title">Create your account</span>
+          </div>
+          <div class="screen__body">
+            <button class="btn btn--google btn--block" data-goto="scr-gphone">Continue with Google</button>
+            <div class="or-divider">or sign up with email</div>
+            <div class="field">
+              <label>Full name</label>
+              <input class="input" id="su-name" value="Alicia Brown" />
+            </div>
+            <div class="field">
+              <label>Email</label>
+              <input class="input" id="su-email" type="email" inputmode="email" value="alicia@example.com" />
+            </div>
             <div class="field">
               <label>Phone number</label>
               <input class="input" id="in-phone" type="tel" inputmode="tel" value="876-555-0199" />
             </div>
-            <p class="tiny muted">We'll text you a one-time code. Standard SMS rates may apply.</p>
+            <div class="field">
+              <label>Password</label>
+              <input class="input" id="su-pass" type="password" value="ridesafe123" />
+            </div>
+            <div class="field">
+              <label>Confirm password</label>
+              <input class="input" id="su-pass2" type="password" value="ridesafe123" />
+            </div>
+            <p class="tiny muted">By continuing you agree to Jurni's Terms &amp; Safety Policy. We'll text a one-time code to verify your number.</p>
+          </div>
+          <div class="screen__footer">
+            <button class="btn btn--primary btn--block btn--lg" id="btn-signup">Create account</button>
+          </div>
+        </section>
+
+        <!-- 3 ─ Log in (returning rider) -->
+        <section class="screen" id="scr-login">
+          <div class="phero map-texture">
+            <div id="login-brand" style="margin-bottom:16px"></div>
+            <h1>Welcome back 👋</h1>
+            <p>Log in to request a ride.</p>
+          </div>
+          <div class="screen__body">
+            <button class="btn btn--google btn--block" data-goto="scr-home">Continue with Google</button>
+            <div class="or-divider">or</div>
+            <div class="field">
+              <label>Email or phone</label>
+              <input class="input" id="li-email" value="alicia@example.com" />
+            </div>
+            <div class="field">
+              <label>Password</label>
+              <input class="input" id="li-pass" type="password" value="ridesafe123" />
+            </div>
+            <p class="small"><a id="link-forgot" style="color:var(--teal);font-weight:600">Forgot password?</a></p>
+            <p class="center small muted" style="margin-top:12px">New to Jurni?
+              <a style="color:var(--teal);font-weight:700" data-goto="scr-signup">Create an account</a>
+            </p>
+          </div>
+          <div class="screen__footer">
+            <button class="btn btn--primary btn--block btn--lg" data-goto="scr-home">Log in</button>
+          </div>
+        </section>
+
+        <!-- 3b ─ Google sign-up: add & verify phone -->
+        <section class="screen" id="scr-gphone">
+          <div class="appbar">
+            <button class="appbar__back" data-goto="scr-auth">←</button>
+            <span class="appbar__title">Verify your phone</span>
+          </div>
+          <div class="screen__body">
+            <div class="g-account">
+              <span class="g-account__ic" id="g-account-ic">G</span>
+              <div class="grow">
+                <div class="bold small">Connected with Google</div>
+                <div class="tiny muted" id="g-email">alicia@gmail.com</div>
+              </div>
+              <span class="pill pill--ok">✓</span>
+            </div>
+            <p class="muted small" style="margin:16px 0 14px">For your safety, every Jurni account — including Google sign-ups — verifies a phone number so we can reach you and confirm it's really you. We'll text a one-time code.</p>
+            <div class="field">
+              <label>Phone number</label>
+              <input class="input" id="g-phone" type="tel" inputmode="tel" placeholder="876-000-0000" value="876-555-0199" />
+            </div>
           </div>
           <div class="screen__footer">
             <button class="btn btn--primary btn--block btn--lg" data-goto="scr-otp">Send code</button>
           </div>
         </section>
 
-        <!-- 2 ─ OTP -->
+        <!-- 4 ─ Verify phone (OTP) -->
         <section class="screen" id="scr-otp">
           <div class="appbar">
-            <button class="appbar__back" data-goto="scr-login">←</button>
+            <button class="appbar__back" data-goto="scr-signup">←</button>
             <span class="appbar__title">Verify your number</span>
           </div>
           <div class="screen__body">
@@ -60,32 +153,120 @@
             <p class="center small muted" style="margin-top:18px">Didn't get it? <a style="color:var(--teal);font-weight:600">Resend</a></p>
           </div>
           <div class="screen__footer">
-            <button class="btn btn--primary btn--block btn--lg" data-goto="scr-verify">Verify</button>
+            <button class="btn btn--primary btn--block btn--lg" data-goto="scr-security">Verify</button>
           </div>
         </section>
 
-        <!-- 3 ─ ID verification + emergency contact -->
-        <section class="screen" id="scr-verify">
+        <!-- 5 ─ Security questions -->
+        <section class="screen" id="scr-security">
           <div class="appbar">
-            <span class="appbar__title">Set up your account</span>
+            <button class="appbar__back" data-goto="scr-otp">←</button>
+            <span class="appbar__title">Secure your account</span>
           </div>
           <div class="screen__body">
-            <span class="eyebrow">Identity</span>
-            <h3 style="margin:6px 0 4px">Basic ID verification</h3>
-            <p class="muted small" style="margin-bottom:14px">Upload a government ID so Jurni can keep rides safe. An admin reviews it.</p>
-            <div class="upload-tile" id="id-tile">
-              <div class="ic">🪪</div>
-              <div class="grow">
-                <div class="bold small">Government ID</div>
-                <div class="tiny muted" id="id-status">No file chosen</div>
-              </div>
-              <button class="btn btn--ghost btn--sm" id="btn-upload-id">Upload</button>
+            <span class="eyebrow">Account security</span>
+            <h3 style="margin:6px 0 4px">Set two security questions</h3>
+            <p class="muted small" style="margin-bottom:16px">These let us confirm it's really you if you ever need to recover your account or reset your password — keeping your rides, history and payment details protected.</p>
+
+            <div class="field">
+              <label>Security question 1</label>
+              <select class="select" id="sq-1">
+                <option>What was the name of your first school?</option>
+                <option>What is your mother's maiden name?</option>
+                <option>What was your childhood nickname?</option>
+                <option>What is the name of your first pet?</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Your answer</label>
+              <input class="input" id="sa-1" placeholder="Answer" />
             </div>
 
-            <div style="height:22px"></div>
-            <span class="eyebrow">Safety</span>
+            <div class="field">
+              <label>Security question 2</label>
+              <select class="select" id="sq-2">
+                <option>In what town were you born?</option>
+                <option>What was your favourite teacher's name?</option>
+                <option>What street did you grow up on?</option>
+                <option>What is your favourite meal?</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Your answer</label>
+              <input class="input" id="sa-2" placeholder="Answer" />
+            </div>
+            <p class="tiny muted">🔒 Your answers are stored securely and are never shown to drivers or other riders.</p>
+          </div>
+          <div class="screen__footer">
+            <button class="btn btn--primary btn--block btn--lg" id="btn-security">Continue</button>
+          </div>
+        </section>
+
+        <!-- 6 ─ Why safety matters -->
+        <section class="screen" id="scr-safety">
+          <div class="phero map-texture">
+            <div class="eyebrow" style="color:var(--aqua-soft)">Why Jurni</div>
+            <h1 style="margin-top:6px">Your safety comes first 🛡️</h1>
+            <p>Jurni is built around one promise: every ride should feel safe for you — and for the people who care about you.</p>
+          </div>
+          <div class="screen__body">
+            <div class="card" style="background:var(--ok-soft);border-color:#bfe6d3;margin-bottom:16px">
+              <div class="row" style="align-items:flex-start">
+                <div class="safety-item__ic" style="background:#fff;color:#1b7a52;flex:none">✓</div>
+                <div class="grow">
+                  <div class="bold">Every driver is background-checked</div>
+                  <div class="small" style="color:#1b7a52">A Jurni admin verifies each driver's identity, licence and <strong>criminal record</strong> before they are ever approved to carry passengers. No clearance, no approval — no exceptions.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="safety-item">
+              <div class="safety-item__ic">🪪</div>
+              <div class="grow">
+                <div class="safety-item__t">Verified identities, both ways</div>
+                <div class="safety-item__d">Riders and drivers both confirm who they are, so you always know who you're travelling with.</div>
+              </div>
+            </div>
+            <div class="safety-item">
+              <div class="safety-item__ic">📍</div>
+              <div class="grow">
+                <div class="safety-item__t">Live trip &amp; one-tap SOS</div>
+                <div class="safety-item__d">Follow your trip in real time and reach emergency services or Jurni admin instantly from any ride screen.</div>
+              </div>
+            </div>
+            <div class="safety-item">
+              <div class="safety-item__ic">👥</div>
+              <div class="grow">
+                <div class="safety-item__t">We alert someone you trust</div>
+                <div class="safety-item__d">Add an emergency contact and we'll notify them with your live location if you ever trigger SOS.</div>
+              </div>
+            </div>
+          </div>
+          <div class="screen__footer">
+            <button class="btn btn--primary btn--block btn--lg" data-goto="scr-verify">Continue setup</button>
+          </div>
+        </section>
+
+        <!-- 7 ─ Finish setup: emergency contact (required) + ID -->
+        <section class="screen" id="scr-verify">
+          <div class="appbar">
+            <button class="appbar__back" data-goto="scr-safety">←</button>
+            <span class="appbar__title">Finish setting up</span>
+          </div>
+          <div class="screen__body">
+            <div class="photo-setup">
+              <span id="setup-ava"></span>
+              <div>
+                <div class="bold">Your profile photo</div>
+                <div class="tiny muted">This is how you'll appear to your driver.</div>
+              </div>
+            </div>
+            <div class="row row--between" style="margin-bottom:2px">
+              <span class="eyebrow">Safety</span>
+              <span class="pill pill--warn">Required</span>
+            </div>
             <h3 style="margin:6px 0 4px">Emergency contact</h3>
-            <p class="muted small" style="margin-bottom:14px">We can alert this person if you ever trigger SOS during a ride.</p>
+            <p class="muted small" style="margin-bottom:14px">Add someone we can alert with your location if you ever trigger SOS during a ride. This keeps you protected, so we ask every rider to set one before their first trip.</p>
             <div class="field">
               <label>Contact name</label>
               <input class="input" id="in-ec-name" placeholder="e.g. Mom" value="Marcia" />
@@ -94,9 +275,22 @@
               <label>Contact number</label>
               <input class="input" id="in-ec-phone" type="tel" placeholder="876-000-0000" value="876-555-0010" />
             </div>
+
+            <div style="height:22px"></div>
+            <span class="eyebrow">Identity</span>
+            <h3 style="margin:6px 0 4px">Basic ID verification</h3>
+            <p class="muted small" style="margin-bottom:14px">Upload a government ID so Jurni can keep rides safe for everyone — the same careful check every driver passes. An admin reviews it.</p>
+            <div class="upload-tile" id="id-tile">
+              <div class="ic">🪪</div>
+              <div class="grow">
+                <div class="bold small">Government ID</div>
+                <div class="tiny muted" id="id-status">No file chosen</div>
+              </div>
+              <button class="btn btn--ghost btn--sm" id="btn-upload-id">Upload</button>
+            </div>
           </div>
           <div class="screen__footer">
-            <button class="btn btn--primary btn--block btn--lg" id="btn-finish-setup">Continue</button>
+            <button class="btn btn--primary btn--block btn--lg" id="btn-finish-setup">Finish &amp; start riding</button>
           </div>
         </section>
 
@@ -108,6 +302,22 @@
             <button class="btn btn--ghost btn--sm" data-goto="scr-history">History</button>
           </div>
           <div class="screen__body">
+            <button class="profile-chip" data-goto="scr-profile" aria-label="Manage your profile">
+              <span id="home-ava"></span>
+              <div class="grow" style="text-align:left">
+                <div class="bold" id="home-greeting">Hi, Alicia 👋</div>
+                <div class="tiny muted">⭐ 4.9 · Rider since Sep · <span style="color:var(--teal);font-weight:700">Manage profile ›</span></div>
+              </div>
+              <span class="pill pill--ok">Verified ✓</span>
+            </button>
+            <div class="trust-banner">
+              <span class="trust-banner__ic">🛡️</span>
+              <div class="grow">
+                <div class="bold small">Every driver is background-checked</div>
+                <div class="tiny muted">Identity &amp; criminal record verified before approval</div>
+              </div>
+              <span class="pill pill--ok">✓</span>
+            </div>
             <div class="card">
               <div class="route-select">
                 <div class="route-pin">
@@ -140,6 +350,72 @@
           </div>
           <div class="screen__footer">
             <button class="btn btn--primary btn--block btn--lg" id="btn-request">Request ride</button>
+          </div>
+        </section>
+
+        <!-- Profile management -->
+        <section class="screen" id="scr-profile">
+          <div class="appbar">
+            <button class="appbar__back" data-goto="scr-home">←</button>
+            <span class="appbar__title">Your profile</span>
+          </div>
+          <div class="screen__body">
+            <div class="profile-head">
+              <span id="profile-ava"></span>
+              <div class="grow">
+                <div class="bold" id="profile-name" style="font-size:18px">Alicia Brown</div>
+                <div class="tiny muted" id="profile-sub">⭐ 4.9 · Rider</div>
+              </div>
+              <span class="pill pill--ok" id="profile-method">Email</span>
+            </div>
+
+            <span class="eyebrow">Account</span>
+            <div class="field mt-sm">
+              <label>Full name</label>
+              <input class="input" id="pf-name" value="Alicia Brown" />
+            </div>
+            <div class="field">
+              <label>Email</label>
+              <input class="input" id="pf-email" type="email" inputmode="email" value="alicia@example.com" />
+            </div>
+            <div class="field">
+              <label class="row" style="gap:8px">Phone number <span class="pill pill--ok" id="pf-phone-badge">Verified ✓</span></label>
+              <input class="input" id="pf-phone" type="tel" inputmode="tel" value="876-555-0199" />
+            </div>
+
+            <div style="height:16px"></div>
+            <div class="row row--between" style="margin-bottom:2px">
+              <span class="eyebrow">Emergency contact</span>
+              <span class="pill pill--warn">Required</span>
+            </div>
+            <div class="field mt-sm">
+              <label>Contact name</label>
+              <input class="input" id="pf-ec-name" placeholder="e.g. Mom" value="Marcia" />
+            </div>
+            <div class="field">
+              <label>Contact number</label>
+              <input class="input" id="pf-ec-phone" type="tel" inputmode="tel" placeholder="876-000-0000" value="876-555-0010" />
+            </div>
+
+            <div style="height:16px"></div>
+            <span class="eyebrow">Security questions</span>
+            <div class="card mt-sm" id="pf-security-card">
+              <div class="pf-sq">
+                <div class="tiny muted">Question 1</div>
+                <div class="small bold">What was the name of your first school?</div>
+                <div class="tiny muted">Answer: ••••••</div>
+              </div>
+              <div class="pf-sq">
+                <div class="tiny muted">Question 2</div>
+                <div class="small bold">In what town were you born?</div>
+                <div class="tiny muted">Answer: ••••••</div>
+              </div>
+            </div>
+            <button class="btn btn--ghost btn--block btn--sm" data-goto="scr-security" style="margin-top:10px">Update security questions</button>
+          </div>
+          <div class="screen__footer">
+            <button class="btn btn--primary btn--block btn--lg" id="btn-save-profile" data-goto="scr-home">Save changes</button>
+            <button class="btn btn--ghost btn--block" id="btn-logout" data-goto="scr-auth" style="margin-top:8px">Log out</button>
           </div>
         </section>
 
@@ -204,7 +480,7 @@
           <div class="screen__body">
             <div class="driver-card">
               <div class="row">
-                <div class="avatar" id="dc-avatar">M</div>
+                <span id="dc-avatar"></span>
                 <div class="grow">
                   <div class="bold" id="dc-name">Marlon · Toyota Axio (silver)</div>
                   <div class="small muted" id="dc-meta">Plate 1234 AB · ⭐ 4.8</div>
@@ -255,7 +531,7 @@
           <div class="screen__body">
             <div class="driver-card">
               <div class="row">
-                <div class="avatar" id="td-avatar">M</div>
+                <span id="td-avatar"></span>
                 <div class="grow">
                   <div class="bold" id="td-dest">Heading to your destination</div>
                   <div class="small muted" id="td-driver">—</div>
@@ -303,6 +579,7 @@
             </div>
 
             <div class="card mt-md center">
+              <div class="rate-who" id="complete-driver"></div>
               <div class="bold" style="margin-bottom:10px">Rate your driver</div>
               <div id="rate-driver" style="justify-content:center;display:flex"></div>
               <div class="field mt-md" style="text-align:left;margin-bottom:0">
@@ -344,6 +621,15 @@
             <div class="grow">
               <div class="bold">Call 911</div>
               <div class="tiny muted">Dial Jamaica emergency services now.</div>
+            </div>
+            <span style="color:var(--muted)">›</span>
+          </a>
+
+          <a class="card row" id="sos-call-contact" href="tel:8765550010" style="margin-bottom:10px;text-decoration:none">
+            <div class="avatar" style="background:var(--teal)">📞</div>
+            <div class="grow">
+              <div class="bold">Call emergency contact</div>
+              <div class="tiny muted" id="sos-contact-label">Marcia · 876-555-0010</div>
             </div>
             <span style="color:var(--muted)">›</span>
           </a>

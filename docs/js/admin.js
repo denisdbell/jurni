@@ -2,7 +2,7 @@
    Jurni prototype — admin dashboard
    ------------------------------------------------------------------ */
 (function () {
-  const { $, $$, jmd, toast, logo, renderStars } = UI;
+  const { $, $$, jmd, toast, logo, renderStars, avatar } = UI;
 
   $("#sb-brand").innerHTML = logo("light", 24, false);
 
@@ -45,6 +45,9 @@
     const map = { Active: "ok", Suspended: "danger", Completed: "ok", "In progress": "warn", Cancelled: "muted", Pending: "warn" };
     return pill(s, map[s] || "muted");
   };
+  const signupBadge = (m) =>
+    m === "Google" ? `<span class="pill pill--muted">🔵 Google</span>` : `<span class="pill pill--muted">✉️ Email</span>`;
+  const verifyBadge = (v) => (v ? pill("📱 Verified", "ok") : pill("Unverified", "warn"));
 
   /* ---------- overview ---------- */
   function renderOverview() {
@@ -79,7 +82,7 @@
       <thead><tr><th>Applicant</th><th>Role</th><th>Documents</th><th>Submitted</th><th>Status</th><th></th></tr></thead>
       <tbody>${list.map((v) => `
         <tr data-id="${v.id}">
-          <td class="cell-strong">${v.name}</td>
+          <td><div class="cell-user">${avatar(v.name, 32, { role: v.role })}<span class="cell-strong">${v.name}</span></div></td>
           <td>${v.role}</td>
           <td class="muted">${v.docs}</td>
           <td class="muted">${v.submitted}</td>
@@ -114,17 +117,23 @@
       (u) => !q || u.name.toLowerCase().includes(q) || u.role.toLowerCase().includes(q)
     );
     $("#tbl-users").innerHTML = `
-      <thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Joined</th><th>Rating</th><th></th></tr></thead>
+      <thead><tr><th>Name</th><th>Role</th><th>Sign-up</th><th>Status</th><th>Joined</th><th>Rating</th><th></th></tr></thead>
       <tbody>${rows.map((u) => `
         <tr data-id="${u.id}">
-          <td class="cell-strong">${u.name}</td>
+          <td><div class="cell-user">${avatar(u.name, 32, { role: u.role })}<span class="cell-strong">${u.name}</span></div></td>
           <td>${u.role}</td>
+          <td>${signupBadge(u.signUpMethod)}</td>
           <td>${statusPill(u.status)}</td>
           <td class="muted">${u.joined}</td>
           <td>${renderStars(u.rating)} <span class="muted small">${u.rating}</span></td>
-          <td><button class="btn btn--ghost btn--sm" data-toggle-user="${u.id}">${u.status === "Active" ? "Suspend" : "Reinstate"}</button></td>
+          <td>
+            <div class="table-actions">
+              <button class="btn btn--ghost btn--sm" data-user="${u.id}">Manage</button>
+              <button class="btn btn--ghost btn--sm" data-toggle-user="${u.id}">${u.status === "Active" ? "Suspend" : "Reinstate"}</button>
+            </div>
+          </td>
         </tr>`).join("")}
-        ${rows.length ? "" : `<tr><td colspan="6" class="empty">No matching users</td></tr>`}</tbody>`;
+        ${rows.length ? "" : `<tr><td colspan="7" class="empty">No matching users</td></tr>`}</tbody>`;
   }
   $("#user-search").addEventListener("input", (e) => renderUsers(e.target.value));
   document.addEventListener("click", (e) => {
@@ -137,7 +146,42 @@
     });
     renderUsers($("#user-search").value);
     renderOverview();
+    if ($("#user-modal").classList.contains("open")) openUser(id); // keep open detail in sync
     toast("User status updated");
+  });
+
+  /* ---------- user detail (reflects the rider's self-managed profile) ---------- */
+  function openUser(id) {
+    const u = Store.get("users").find((x) => x.id === id);
+    if (!u) return;
+    $("#user-dialog").innerHTML = `
+      <div class="udetail__head">
+        ${avatar(u.name, 52, { role: u.role })}
+        <div class="grow">
+          <div class="cell-strong" style="font-size:18px">${u.name}</div>
+          <div class="muted small">${u.role} · ${renderStars(u.rating)} ${u.rating}</div>
+        </div>
+        ${statusPill(u.status)}
+      </div>
+      <div class="udetail__grid">
+        <div><div class="k">Email</div><div class="v">${u.email || "—"}</div></div>
+        <div><div class="k">Phone</div><div class="v">${u.phone || "—"} ${verifyBadge(u.phoneVerified)}</div></div>
+        <div><div class="k">Sign-up method</div><div class="v">${signupBadge(u.signUpMethod)}</div></div>
+        <div><div class="k">Security questions</div><div class="v">${u.securityQuestions ? u.securityQuestions + " set 🔒" : "—"}</div></div>
+        <div class="span2"><div class="k">Emergency contact</div><div class="v">${u.emergencyContact || "—"}</div></div>
+      </div>
+      <div class="udetail__actions">
+        <button class="btn btn--ghost" data-toggle-user="${u.id}">${u.status === "Active" ? "Suspend" : "Reinstate"}</button>
+        <button class="btn btn--primary" id="user-close">Done</button>
+      </div>`;
+    $("#user-modal").classList.add("open");
+  }
+  document.addEventListener("click", (e) => {
+    const open = e.target.closest("[data-user]");
+    if (open) { openUser(open.getAttribute("data-user")); return; }
+    if (e.target.closest("#user-close") || e.target === $("#user-modal")) {
+      $("#user-modal").classList.remove("open");
+    }
   });
 
   /* ---------- zone fare matrix ---------- */
@@ -195,7 +239,7 @@
             <strong>${a.type === "SOS" ? "SOS triggered" : "Activity report"}</strong>
             ${a.acknowledged ? pill("Acknowledged", "muted") : pill("Open", "danger")}
           </div>
-          <div class="meta">From: <strong>${a.from}</strong> · ${a.time}</div>
+          <div class="meta meta--who">${avatar(a.from, 26)}<span>From: <strong>${a.from}</strong> · ${a.time}</span></div>
           <div class="meta">Ride: ${a.ride} · Driver/vehicle: ${a.driver}</div>
           <div class="meta">📍 GPS captured: <strong>${a.gps}</strong></div>
           <div class="small" style="margin-top:6px">${a.note}</div>

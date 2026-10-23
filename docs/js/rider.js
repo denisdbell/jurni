@@ -3,11 +3,17 @@
    ------------------------------------------------------------------ */
 (function () {
   const { $, $$, jmd, toast, showScreen, wireNav, wireModals, closeModal,
-          wireStarInput, captureGps, nowLabel, logo, renderStars } = UI;
+          wireStarInput, captureGps, nowLabel, logo, renderStars, avatar } = UI;
 
   /* Brand marks */
   $("#sb-brand").innerHTML = logo("light", 15, false);
+  $("#auth-brand").innerHTML = logo("light", 26, true);
   $("#login-brand").innerHTML = logo("light", 26, true);
+
+  /* Rider's own profile "photo" — shown on setup, home & profile */
+  $("#setup-ava").innerHTML = avatar(RIDER.name, 56, { role: "Rider", verified: true });
+  $("#home-ava").innerHTML = avatar(RIDER.name, 46, { role: "Rider" });
+  $("#profile-ava").innerHTML = avatar(RIDER.name, 56, { role: "Rider", verified: true });
 
   wireNav(document);
   wireModals();
@@ -28,6 +34,50 @@
     $("#otp-dest").textContent = e.target.value || "your number";
   });
 
+  /* ---------- Google buttons (demo) ----------
+     Prototype only — no real OAuth. The buttons just render Google's "G";
+     navigation is handled by data-goto (signup → phone verification,
+     login → home). */
+  const GOOGLE_G =
+    '<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">' +
+    '<path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/>' +
+    '<path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 18.9 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>' +
+    '<path fill="#4CAF50" d="M24 44c5.5 0 10.5-2.1 14.3-5.6l-6.6-5.6C29.7 34.6 27 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.6 5.1C9.6 39.6 16.2 44 24 44z"/>' +
+    '<path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4.1 5.5l6.6 5.6C41.7 36.9 44 31 44 24c0-1.3-.1-2.3-.4-3.5z"/>' +
+    '</svg>';
+  $$(".btn--google").forEach((b) => b.insertAdjacentHTML("afterbegin", GOOGLE_G));
+
+  /* ---------- create account (email) ---------- */
+  $("#btn-signup").addEventListener("click", () => {
+    const p1 = $("#su-pass").value, p2 = $("#su-pass2").value;
+    if (!p1 || p1 !== p2) { toast("Passwords don't match", "danger"); return; }
+    RIDER.name = $("#su-name").value.trim().split(/\s+/)[0] || RIDER.name;
+    RIDER.email = $("#su-email").value.trim();
+    $("#otp-dest").textContent = $("#in-phone").value || "your number";
+    showScreen("scr-otp");
+  });
+
+  /* ---------- security questions ---------- */
+  $("#btn-security").addEventListener("click", () => {
+    const a1 = $("#sa-1").value.trim(), a2 = $("#sa-2").value.trim();
+    if (!a1 || !a2) { toast("Please answer both security questions", "danger"); return; }
+    RIDER.security = [
+      { q: $("#sq-1").value, a: a1 },
+      { q: $("#sq-2").value, a: a2 },
+    ];
+    toast("Security questions saved", "ok");
+    showScreen("scr-safety");
+  });
+
+  /* ---------- forgot password (ties back to security questions) ---------- */
+  $("#link-forgot").addEventListener("click", () => {
+    toast("We'll verify your security questions to reset your password");
+  });
+
+  /* ---------- profile (demo — toast only; nav via data-goto) ---------- */
+  $("#btn-save-profile").addEventListener("click", () => toast("Profile updated", "ok"));
+  $("#btn-logout").addEventListener("click", () => toast("Logged out"));
+
   /* ---------- ID upload (simulated) ---------- */
   $("#btn-upload-id").addEventListener("click", () => {
     const tile = $("#id-tile");
@@ -38,9 +88,16 @@
     toast("ID uploaded — pending admin review", "ok");
   });
 
-  /* ---------- finish setup ---------- */
+  /* ---------- finish setup (emergency contact is required) ---------- */
   $("#btn-finish-setup").addEventListener("click", () => {
-    RIDER.emergencyContact = `${$("#in-ec-name").value} · ${$("#in-ec-phone").value}`;
+    const ecName = $("#in-ec-name").value.trim();
+    const ecPhone = $("#in-ec-phone").value.trim();
+    if (!ecName || !ecPhone) {
+      toast("Please add an emergency contact to continue", "danger");
+      $(ecName ? "#in-ec-phone" : "#in-ec-name").focus();
+      return;
+    }
+    RIDER.emergencyContact = `${ecName} · ${ecPhone}`;
     toast("Account ready");
     showScreen("scr-home");
   });
@@ -127,7 +184,7 @@
   /* ---------- trip screen + distance bar ---------- */
   function startTrip() {
     const d = trip.driver;
-    $("#dc-avatar").textContent = d.name[0];
+    $("#dc-avatar").innerHTML = avatar(d.name, 48, { role: "Driver", badge: "🚗" });
     $("#dc-name").textContent = `${d.name} · ${d.vehicle}`;
     $("#dc-meta").innerHTML = `Plate ${d.plate} · ${renderStars(d.rating)} ${d.rating}`;
     $("#dc-call").href = "tel:" + d.phone.replace(/[^0-9]/g, "");
@@ -162,7 +219,7 @@
   /* Leg 2 — riding to the destination */
   function startToDest() {
     const d = trip.driver;
-    $("#td-avatar").textContent = d.name[0];
+    $("#td-avatar").innerHTML = avatar(d.name, 46, { role: "Driver", badge: "🚗" });
     $("#td-dest").textContent = `Heading to ${trip.toLabel}`;
     $("#td-driver").textContent = `with ${d.name} · ${d.vehicle}`;
     $("#td-route").textContent = `${trip.fromLabel} → ${trip.toLabel}`;
@@ -208,6 +265,12 @@
   /* ---------- complete + rate ---------- */
   function goToComplete() {
     $("#complete-fare").textContent = jmd(trip.fare);
+    const d = trip.driver;
+    $("#complete-driver").innerHTML = d
+      ? `${avatar(d.name, 52, { role: "Driver", badge: "🚗" })}` +
+        `<div class="bold" style="margin-top:8px">${d.name}</div>` +
+        `<div class="tiny muted">${d.vehicle}</div>`
+      : "";
     showScreen("scr-complete");
   }
 
@@ -246,7 +309,7 @@
     const li = document.createElement("li");
     li.className = "litem";
     li.innerHTML = `
-      <div class="avatar" style="background:var(--mint);color:var(--teal-700)">🚗</div>
+      ${avatar(r.driver, 42, { role: "Driver" })}
       <div class="litem__main">
         <div class="litem__title">${r.from} → ${r.to}</div>
         <div class="litem__sub">${r.date} · ${r.driver} · ${renderStars(r.rating)}</div>
@@ -256,6 +319,24 @@
   }
   function prependHistory(r) { $("#history-list").prepend(rideRow(r)); }
   SEED_HISTORY.forEach((r) => $("#history-list").appendChild(rideRow(r)));
+
+  /* ---------- SOS: keep the "call emergency contact" row in sync ----------
+     Reads the rider's saved emergency contact ("Name · number"), points the
+     tel: link at the number and hides the row if none is set. */
+  function syncSosContact() {
+    const row = $("#sos-call-contact");
+    if (!row) return;
+    const ec = (RIDER.emergencyContact || "").trim();
+    if (!ec) { row.classList.add("hidden"); return; }
+    row.classList.remove("hidden");
+    $("#sos-contact-label").textContent = ec;
+    const digits = ec.split("·").pop().replace(/[^0-9+]/g, "");
+    if (digits) row.href = "tel:" + digits;
+  }
+  syncSosContact();
+  document.addEventListener("click", (e) => {
+    if (e.target.closest('[data-modal-open="sos-modal"]')) syncSosContact();
+  });
 
   /* ---------- SOS ---------- */
   $("#sos-alert").addEventListener("click", () => {

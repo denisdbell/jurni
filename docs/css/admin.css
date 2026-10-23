@@ -143,6 +143,8 @@
 .table tr:last-child td { border-bottom: 0; }
 .table tbody tr:hover { background: #f8fbfb; }
 .cell-strong { font-weight: 700; }
+.cell-user { display: flex; align-items: center; gap: 10px; }
+.alert-card .meta--who { display: flex; align-items: center; gap: 8px; }
 
 .table-actions { display: flex; gap: 8px; }
 
@@ -185,6 +187,31 @@
 .alert-card .spacer { flex: 1; }
 
 .empty { padding: 30px; text-align: center; color: var(--muted); font-size: 14px; }
+
+/* User detail dialog (reuses base .modal / .modal__sheet) */
+#user-modal { align-items: center; }
+#user-modal .modal__sheet {
+  width: calc(100% - 40px);
+  max-width: 520px;
+  border-radius: var(--r-lg);
+  padding: 22px;
+}
+.udetail__head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.udetail__head .grow { min-width: 0; }
+.udetail__grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px;
+  padding: 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+}
+.udetail__grid .span2 { grid-column: 1 / -1; }
+.udetail__grid .k {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--muted); font-weight: 700; margin-bottom: 3px;
+}
+.udetail__grid .v { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.udetail__actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
 
 /* Responsive: sidebar becomes a slide-in drawer on narrow screens */
 @media (max-width: 860px) {

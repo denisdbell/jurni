@@ -52,11 +52,11 @@
         <!-- Overview -->
         <section class="view active" id="v-overview">
           <div class="stat-grid">
-            <div class="stat"><div class="label">Total users</div><div class="value" id="st-users">0</div><div class="foot muted">riders + drivers</div></div>
-            <div class="stat"><div class="label">Active drivers</div><div class="value" id="st-drivers">0</div><div class="foot" style="color:var(--ok)">online capable</div></div>
-            <div class="stat accent"><div class="label">Rides logged</div><div class="value" id="st-rides">0</div><div class="foot">today & recent</div></div>
-            <div class="stat"><div class="label">Pending verifications</div><div class="value" id="st-pending">0</div><div class="foot muted">awaiting review</div></div>
-            <div class="stat alert"><div class="label">Open SOS alerts</div><div class="value" id="st-alerts">0</div><div class="foot muted">need acknowledgement</div></div>
+            <div class="stat"><div class="label">👥 Total users</div><div class="value" id="st-users">0</div><div class="foot muted">riders + drivers</div></div>
+            <div class="stat"><div class="label">🚗 Active drivers</div><div class="value" id="st-drivers">0</div><div class="foot" style="color:var(--ok)">online capable</div></div>
+            <div class="stat accent"><div class="label">🧭 Rides logged</div><div class="value" id="st-rides">0</div><div class="foot">today & recent</div></div>
+            <div class="stat"><div class="label">🪪 Pending verifications</div><div class="value" id="st-pending">0</div><div class="foot muted">awaiting review</div></div>
+            <div class="stat alert"><div class="label">🚨 Open SOS alerts</div><div class="value" id="st-alerts">0</div><div class="foot muted">need acknowledgement</div></div>
           </div>
 
           <div class="panel">
@@ -119,6 +119,11 @@
     </main>
 
     <div class="nav-backdrop" id="nav-backdrop"></div>
+
+    <!-- User detail — reflects the rider's self-managed profile -->
+    <div class="modal" id="user-modal">
+      <div class="modal__sheet user-dialog" id="user-dialog"></div>
+    </div>
   </div>
 
   <script src="js/data.js"></script>

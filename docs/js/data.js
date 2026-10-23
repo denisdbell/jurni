@@ -124,7 +124,59 @@ const DRIVERS = [
 ];
 
 /* The signed-in rider for this demo */
-const RIDER = { name: "Alicia", phone: "876-555-0199", rating: 4.9, emergencyContact: "" };
+const RIDER = {
+  name: "Alicia", fullName: "Alicia Brown",
+  phone: "876-555-0199", email: "",
+  signUpMethod: "Email", phoneVerified: false,
+  rating: 4.9, emergencyContact: "Marcia · 876-555-0010", security: [],
+};
+
+/* ---------- Profile avatars ----------
+   Every rider/driver gets a real headshot photo (committed under
+   docs/img/avatars/, so it works offline on GitHub Pages). Each spec pairs the
+   photo with a brand-tinted gradient that shows as a placeholder disc while the
+   image loads and tints the status ring. Keyed by first name; avatarSpec()
+   falls back to a deterministic photo from the pool so names that only appear
+   in seed strings (e.g. "Marlon Reid") still resolve to a real face. */
+const AVATAR_DIR = "img/avatars/";
+const AVATAR_PALETTE = [
+  ["#0e5a68", "#4fc3d4"],
+  ["#0a3d47", "#2bb673"],
+  ["#1f8a8f", "#9fe0e8"],
+  ["#5b6cff", "#4fc3d4"],
+  ["#f5a623", "#e5484d"],
+  ["#9b59b6", "#4fc3d4"],
+  ["#ff7a59", "#f5a623"],
+  ["#128277", "#7ed9c3"],
+];
+const AVATARS = {
+  marlon:  { photo: "marlon.jpg",  bg: ["#0e5a68", "#4fc3d4"] },
+  shanice: { photo: "shanice.jpg", bg: ["#9b59b6", "#4fc3d4"] },
+  devon:   { photo: "devon.jpg",   bg: ["#0a3d47", "#2bb673"] },
+  alicia:  { photo: "alicia.jpg",  bg: ["#ff7a59", "#f5a623"] },
+  kemar:   { photo: "kemar.jpg",   bg: ["#128277", "#7ed9c3"] },
+  tanya:   { photo: "tanya.jpg",   bg: ["#5b6cff", "#4fc3d4"] },
+  omar:    { photo: "omar.jpg",    bg: ["#1f8a8f", "#9fe0e8"] },
+  andre:   { photo: "andre.jpg",   bg: ["#0e5a68", "#2bb673"] },
+  keisha:  { photo: "keisha.jpg",  bg: ["#9b59b6", "#9fe0e8"] },
+  marcia:  { photo: "marcia.jpg",  bg: ["#f5a623", "#e5484d"] },
+};
+/* Fallback faces (incl. a spare) for any name not in AVATARS. */
+const AVATAR_POOL = [
+  "generic.jpg", "marlon.jpg", "shanice.jpg", "devon.jpg", "alicia.jpg",
+  "kemar.jpg", "tanya.jpg", "omar.jpg", "andre.jpg", "keisha.jpg", "marcia.jpg",
+];
+function avatarSpec(name, role) {
+  const key = String(name || "").trim().toLowerCase().split(/\s+/)[0];
+  let h = 0;
+  for (const ch of key) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  if (AVATARS[key]) {
+    return { photo: AVATAR_DIR + AVATARS[key].photo, bg: AVATARS[key].bg };
+  }
+  const bg = AVATAR_PALETTE[h % AVATAR_PALETTE.length];
+  const photo = AVATAR_DIR + AVATAR_POOL[h % AVATAR_POOL.length];
+  return { photo, bg };
+}
 
 /* Incoming ride requests shown to a driver */
 const SEED_REQUESTS = [
@@ -142,19 +194,31 @@ const SEED_HISTORY = [
 
 /* Admin: users */
 const SEED_USERS = [
-  { id: "u1", name: "Alicia Brown", role: "Rider", status: "Active", joined: "Sep 28", rating: 4.9 },
-  { id: "u2", name: "Marlon Reid", role: "Driver", status: "Active", joined: "Sep 15", rating: 4.8 },
-  { id: "u3", name: "Shanice Green", role: "Driver", status: "Active", joined: "Sep 20", rating: 4.9 },
-  { id: "u4", name: "Kemar Daley", role: "Rider", status: "Active", joined: "Oct 1", rating: 4.7 },
-  { id: "u5", name: "Devon Clarke", role: "Driver", status: "Suspended", joined: "Aug 30", rating: 4.6 },
-  { id: "u6", name: "Tanya Lewis", role: "Rider", status: "Active", joined: "Oct 10", rating: 5.0 },
+  { id: "u1", name: "Alicia Brown", role: "Rider", status: "Active", joined: "Sep 28", rating: 4.9,
+    email: "alicia@example.com", phone: "876-555-0199", signUpMethod: "Email", phoneVerified: true,
+    emergencyContact: "Marcia · 876-555-0010", securityQuestions: 2 },
+  { id: "u2", name: "Marlon Reid", role: "Driver", status: "Active", joined: "Sep 15", rating: 4.8,
+    email: "marlon@example.com", phone: "876-555-0101", signUpMethod: "Email", phoneVerified: true,
+    emergencyContact: "Simone · 876-555-0120", securityQuestions: 2 },
+  { id: "u3", name: "Shanice Green", role: "Driver", status: "Active", joined: "Sep 20", rating: 4.9,
+    email: "shanice@example.com", phone: "876-555-0147", signUpMethod: "Email", phoneVerified: true,
+    emergencyContact: "Paulette · 876-555-0171", securityQuestions: 2 },
+  { id: "u4", name: "Kemar Daley", role: "Rider", status: "Active", joined: "Oct 1", rating: 4.7,
+    email: "kemar@gmail.com", phone: "876-555-0150", signUpMethod: "Google", phoneVerified: true,
+    emergencyContact: "Donna · 876-555-0133", securityQuestions: 2 },
+  { id: "u5", name: "Devon Clarke", role: "Driver", status: "Suspended", joined: "Aug 30", rating: 4.6,
+    email: "devon@example.com", phone: "876-555-0188", signUpMethod: "Email", phoneVerified: false,
+    emergencyContact: "—", securityQuestions: 2 },
+  { id: "u6", name: "Tanya Lewis", role: "Rider", status: "Active", joined: "Oct 10", rating: 5.0,
+    email: "tanya@gmail.com", phone: "876-555-0160", signUpMethod: "Google", phoneVerified: true,
+    emergencyContact: "Keisha · 876-555-0199", securityQuestions: 2 },
 ];
 
 /* Admin: verification queue */
 const SEED_VERIFICATIONS = [
-  { id: "v1", name: "Omar Wright", role: "Driver", docs: "Licence, Registration, Insurance", submitted: "Oct 14", status: "Pending" },
+  { id: "v1", name: "Omar Wright", role: "Driver", docs: "Licence, Registration, Insurance, Police Record", submitted: "Oct 14", status: "Pending" },
   { id: "v2", name: "Keisha Morgan", role: "Rider", docs: "Government ID", submitted: "Oct 14", status: "Pending" },
-  { id: "v3", name: "Andre Campbell", role: "Driver", docs: "Licence, Insurance", submitted: "Oct 13", status: "Pending" },
+  { id: "v3", name: "Andre Campbell", role: "Driver", docs: "Licence, Insurance, Police Record", submitted: "Oct 13", status: "Pending" },
 ];
 
 /* Admin: rides activity */
